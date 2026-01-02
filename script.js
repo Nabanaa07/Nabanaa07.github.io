@@ -500,25 +500,55 @@ function initThemeSwitcher() {
 function initMobileMenu() {
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const navLinks = document.querySelector('.nav-links');
+    const overlay = document.getElementById('mobile-overlay');
+    
+    function closeMenu() {
+        navLinks.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        
+        // Reset to hamburger icon
+        const svg = mobileMenuBtn.querySelector('svg');
+        if (svg) {
+            svg.innerHTML = '<path d="M3 12h18M3 6h18M3 18h18" stroke-width="2" stroke-linecap="round"/>';
+        }
+    }
     
     if (mobileMenuBtn && navLinks) {
         mobileMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            navLinks.classList.toggle('active');
+            const isActive = navLinks.classList.toggle('active');
+            if (overlay) overlay.classList.toggle('active');
+            
+            // Toggle body scroll
+            document.body.style.overflow = isActive ? 'hidden' : '';
+            
+            // Update hamburger icon
+            const svg = mobileMenuBtn.querySelector('svg');
+            if (svg) {
+                svg.innerHTML = isActive 
+                    ? '<path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round"/>'
+                    : '<path d="M3 12h18M3 6h18M3 18h18" stroke-width="2" stroke-linecap="round"/>';
+            }
         });
+        
+        // Close menu when clicking overlay
+        if (overlay) {
+            overlay.addEventListener('click', closeMenu);
+        }
         
         // Close menu when clicking outside
         document.addEventListener('click', (e) => {
-            if (!navLinks.contains(e.target) && e.target !== mobileMenuBtn) {
-                navLinks.classList.remove('active');
+            if (!navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                if (navLinks.classList.contains('active')) {
+                    closeMenu();
+                }
             }
         });
         
         // Close menu when clicking a link
         navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-            });
+            link.addEventListener('click', closeMenu);
         });
     }
 }
