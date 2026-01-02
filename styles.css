@@ -1017,9 +1017,9 @@ section h2 {
 /* Videos Grid */
 .videos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -1111,15 +1111,15 @@ section h2 {
 /* Shorts Grid */
 .shorts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 250px));
+    gap: 1.5rem;
+    max-width: 900px;
     margin: 0 auto;
+    justify-content: center;
 }
 
 .shorts-grid .video-card {
-    max-width: 350px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .shorts-grid .video-thumbnail {
