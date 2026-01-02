@@ -297,6 +297,7 @@ body {
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    user-select: none;
 }
 
 
@@ -1226,11 +1227,60 @@ section h2 {
     transition: color 0.3s ease;
     font-size: 0.95rem;
     font-weight: 500;
+    user-select: none;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
     color: var(--mint-green);
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+    display: none;
+    background: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+    border-color: var(--mint-green);
+    color: var(--mint-green);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        right: -100%;
+        width: 250px;
+        height: calc(100vh - 70px);
+        background: var(--bg-secondary);
+        flex-direction: column;
+        padding: 2rem;
+        gap: 1.5rem;
+        border-left: 1px solid var(--border-color);
+        transition: right 0.3s ease;
+        z-index: 999;
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    .theme-btn {
+        margin-left: 0.5rem;
+    }
 }
 
 /* Theme Switcher */
@@ -1318,6 +1368,7 @@ section h2 {
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    user-select: none;
 }
 
 .link-card::before {
@@ -1446,59 +1497,103 @@ footer {
     }
 }
 
+/* Music Page Styles */
+.music-showcase {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.music-icon-large {
+    width: 80px;
+    height: 80px;
+    color: var(--primary-yellow);
+    margin: 0 auto 2rem;
+    display: block;
+}
+
+.music-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.music-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    padding: 3rem;
+    text-align: center;
+}
+
+.music-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
-    .nav-menu {
-        display: none;
-    }
-    
     .hero-title {
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
     
     .hero-subtitle {
-        font-size: 1.25rem;
+        font-size: 1.125rem;
     }
     
     .hero-logo {
-        max-width: 180px;
+        max-width: 150px;
     }
     
-    .hero-stats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        padding: 1.5rem;
+    .hero-cta {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.75rem;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.875rem 1.5rem;
+        font-size: 0.95rem;
     }
     
     section h2 {
         font-size: 2rem;
     }
     
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .links-grid {
+        grid-template-columns: 1fr;
         gap: 1rem;
     }
     
-    .features-grid {
-        grid-template-columns: 1fr;
+    .link-card {
+        padding: 1.5rem;
     }
     
-    .about-content {
+    .videos-grid {
         grid-template-columns: 1fr;
-        gap: 3rem;
-    }
-    
-    .email-display a {
-        font-size: 1.5rem;
-        word-break: break-all;
+        gap: 1rem;
     }
     
     .shorts-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
+        gap: 1rem;
     }
     
-    .benefits-grid {
-        grid-template-columns: 1fr;
+    .email-display a {
+        font-size: 1.125rem;
+        word-break: break-word;
+    }
+    
+    .social-icons {
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2.5rem;
     }
     
     #twitch-embed {

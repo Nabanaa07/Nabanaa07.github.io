@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Listen to Nabana's original music created live on stream.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nabanaa07.github.io/music.html">
+    <meta property="og:title" content="Music - Nabana">
+    <meta property="og:description" content="Original music created live on stream.">
+    <meta property="og:image" content="https://nabanaa07.github.io/logo_nobg.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://nabanaa07.github.io/music.html">
+    <meta property="twitter:title" content="Music - Nabana">
+    <meta property="twitter:description" content="Original music created live on stream.">
+    <meta property="twitter:image" content="https://nabanaa07.github.io/logo_nobg.png">
+    
+    <title>Music - Nabana</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="theme-effects"></div>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">
+                    <img src="logo_nobg.png" alt="Nabana Logo" class="logo-img">
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="videos.html">Videos</a></li>
+                    <li><a href="live.html">Live</a></li>
+                    <li><a href="music.html" class="active">Music</a></li>
+                    <li><a href="https://discord.gg/x64BRW4RNa" target="_blank">Discord</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" id="mobile-menu-btn" aria-label="Menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 12h18M3 6h18M3 18h18" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <button id="theme-toggle" class="theme-btn" aria-label="Theme Selector">
+                    <span id="theme-label">Themes</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div id="theme-menu" class="theme-menu" style="display: none;">
+                    <button class="theme-option" data-theme="dark">Dark Mode</button>
+                    <button class="theme-option" data-theme="extra-dark">Extra Dark</button>
+                    <button class="theme-option" data-theme="light">Light Mode</button>
+                    <button class="theme-option" data-theme="egirl">E-Girl Mode</button>
+                    <button class="theme-option" data-theme="banana">Banana Mode</button>
+                    <button class="theme-option" data-theme="chocolate">Milk Chocolate</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="content-section" style="padding-top: 120px;">
+        <div class="container">
+            <div class="music-showcase">
+                <div class="music-header">
+                    <svg class="music-icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M9 18V5L21 3V16M9 18C9 19.6569 7.65685 21 6 21C4.34315 21 3 19.6569 3 18C3 16.3431 4.34315 15 6 15C7.65685 15 9 16.3431 9 18ZM21 16C21 17.6569 19.6569 19 18 19C16.3431 19 15 17.6569 15 16C15 14.3431 16.3431 13 18 13C19.6569 13 21 14.3431 21 16ZM9 9L21 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h2 style="text-align: center; margin-bottom: 1rem;">Music</h2>
+                    <p style="text-align: center; color: var(--text-secondary); max-width: 600px; margin: 0 auto 3rem;">Original music created live on stream. More tracks coming soon.</p>
+                </div>
+                
+                <!-- Placeholder for music embeds -->
+                <div class="music-grid">
+                    <div class="music-card">
+                        <div class="music-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width: 64px; height: 64px; color: var(--mint-green);">
+                                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                <polygon points="10,8 16,12 10,16" fill="currentColor"/>
+                            </svg>
+                            <p style="margin-top: 1rem; color: var(--text-secondary);">Music player coming soon</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cta-section" style="margin-top: 3rem;">
+                    <p style="text-align: center; color: var(--text-tertiary); margin-bottom: 1.5rem;">
+                        Watch me create music live on Twitch
+                    </p>
+                    <a href="https://www.twitch.tv/nabana07" class="btn btn-primary" target="_blank">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/>
+                        </svg>
+                        Watch on Twitch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <a href="https://www.youtube.com/@Nabana07" target="_blank" rel="noopener">YouTube</a>
+                <a href="https://www.twitch.tv/nabana07" target="_blank" rel="noopener">Twitch</a>
+                <a href="https://discord.gg/x64BRW4RNa" target="_blank" rel="noopener">Discord</a>
+            </div>
+            <p class="footer-copyright">© 2026 Nabana</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
