@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Watch Nabana live on Twitch - gaming streams, comedy, and good vibes.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nabanaa07.github.io/live.html">
+    <meta property="og:title" content="Live Streams - Nabana">
+    <meta property="og:description" content="Catch the streams on Twitch - gaming, comedy, and good vibes.">
+    <meta property="og:image" content="https://nabanaa07.github.io/logo_nobg.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://nabanaa07.github.io/live.html">
+    <meta property="twitter:title" content="Live Streams - Nabana">
+    <meta property="twitter:description" content="Catch the streams on Twitch - gaming, comedy, and good vibes.">
+    <meta property="twitter:image" content="https://nabanaa07.github.io/logo_nobg.png">
+    
+    <title>Live - Nabana</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="theme-effects"></div>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">
+                    <img src="logo_nobg.png" alt="Nabana Logo" class="logo-img">
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="videos.html">Videos</a></li>
+                    <li><a href="live.html" class="active">Live</a></li>
+                    <li><a href="https://discord.gg/x64BRW4RNa" target="_blank">Discord</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <button id="theme-toggle" class="theme-btn" aria-label="Theme Selector">
+                    <span id="theme-label">Themes</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div id="theme-menu" class="theme-menu" style="display: none;">
+                    <button class="theme-option" data-theme="dark">Dark Mode</button>
+                    <button class="theme-option" data-theme="extra-dark">Extra Dark</button>
+                    <button class="theme-option" data-theme="light">Light Mode</button>
+                    <button class="theme-option" data-theme="egirl">E-Girl Mode</button>
+                    <button class="theme-option" data-theme="banana">Banana Mode</button>
+                    <button class="theme-option" data-theme="chocolate">Milk Chocolate</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="container">
+            <h1>Live Streams</h1>
+            <p id="stream-status-text">Checking stream status...</p>
+        </div>
+    </div>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="live-container">
+                <div id="offline-state" class="stream-offline">
+                    <svg class="stream-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="2" y="3" width="20" height="14" rx="2" stroke-width="2"/>
+                        <path d="M8 21H16" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M12 17V21" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <h2>Stream Offline</h2>
+                    <p>Check back later for the next stream</p>
+                    <a href="https://www.twitch.tv/nabana07" class="btn btn-primary" target="_blank">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/>
+                        </svg>
+                        Follow on Twitch
+                    </a>
+                </div>
+
+                <div id="live-state" class="stream-live" style="display: none;">
+                    <div class="live-badge-large">
+                        <span class="live-dot"></span>
+                        <span>LIVE NOW</span>
+                    </div>
+                    <div id="twitch-embed"></div>
+                    <a href="https://www.twitch.tv/nabana07" class="btn btn-primary" target="_blank">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/>
+                        </svg>
+                        Watch on Twitch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <a href="https://www.youtube.com/@Nabana07" target="_blank" rel="noopener">YouTube</a>
+                <a href="https://www.twitch.tv/nabana07" target="_blank" rel="noopener">Twitch</a>
+                <a href="https://discord.gg/x64BRW4RNa" target="_blank" rel="noopener">Discord</a>
+            </div>
+            <p class="footer-copyright">© 2026 Nabana</p>
+        </div>
+    </footer>
+
+    <script src="https://embed.twitch.tv/embed/v1.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
