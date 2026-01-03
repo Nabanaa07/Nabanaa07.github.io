@@ -1282,6 +1282,16 @@ section h2 {
         max-width: 100%;
     }
     
+    /* Exempt fixed/absolute positioned nav elements */
+    .navbar,
+    .nav-content,
+    .mobile-menu-toggle,
+    .theme-btn,
+    .theme-menu,
+    .nav-links {
+        max-width: none;
+    }
+    
     /* Navbar adjustments */
     .navbar {
         padding: 0.75rem 0;
@@ -1307,13 +1317,31 @@ section h2 {
         transform: translateY(-50%);
     }
     
-    /* Hide theme button on mobile */
+    /* Position theme button on mobile - left of hamburger */
     .theme-btn {
         position: absolute;
         right: 4rem;
         top: 50%;
         transform: translateY(-50%);
         margin-left: 0;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+        z-index: 1001;
+    }
+    
+    .theme-btn #theme-label {
+        display: none;
+    }
+    
+    .theme-btn svg {
+        margin: 0;
+    }
+    
+    /* Position theme menu correctly on mobile */
+    .theme-menu {
+        right: 4rem;
+        top: 55px;
+        z-index: 1002;
     }
     
     /* Hide desktop navigation */
