@@ -1279,17 +1279,31 @@ section h2 {
     
     .nav-content {
         padding: 0 1rem;
+        position: relative;
     }
     
     .logo-img {
         max-width: 40px;
     }
     
-    /* Show mobile menu button */
+    /* Show mobile menu button - position in top right */
     .mobile-menu-toggle {
         display: flex;
         align-items: center;
         justify-content: center;
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    /* Hide theme button on mobile */
+    .theme-btn {
+        position: absolute;
+        right: 4rem;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-left: 0;
     }
     
     /* Hide desktop navigation */
@@ -1321,10 +1335,12 @@ section h2 {
         border-bottom: 1px solid var(--border-color);
     }
     
-    .theme-btn {
+    .nav-links .theme-btn {
         margin-left: 0;
         margin-top: 1rem;
         justify-content: flex-start;
+        position: static;
+        transform: none;
     }
     
     /* Hero Section */
@@ -1413,17 +1429,26 @@ section h2 {
         max-width: 200px;
     }
     
-    /* Video iframes */
+    /* Video iframes - compact mobile sizing */
+    .video-card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
     .video-card iframe {
         width: 100%;
-        height: auto;
-        min-height: 200px;
+        height: 200px;
+        border-radius: 12px;
+    }
+    
+    .short-card {
+        margin: 0 auto;
     }
     
     .short-card iframe {
         width: 100%;
-        height: auto;
-        min-height: 250px;
+        height: 280px;
+        border-radius: 12px;
     }
     
     /* Live Stream Section */
@@ -1453,7 +1478,8 @@ section h2 {
     }
     
     h2 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem !important;
     }
     
     h3 {
@@ -1462,7 +1488,11 @@ section h2 {
     
     /* Section Padding */
     section {
-        padding: 3rem 1rem;
+        padding: 2rem 1rem;
+    }
+    
+    .content-section {
+        padding-top: 100px !important;
     }
     
     .container {
@@ -1489,17 +1519,27 @@ section h2 {
         min-width: 100%;
     }
     
+    /* Compact video sizing for small screens */
+    .video-card iframe {
+        height: 180px;
+    }
+    
     .shorts-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         justify-items: center;
+        gap: 0.75rem;
     }
     
     .short-card {
-        max-width: 250px;
+        max-width: 160px;
+    }
+    
+    .short-card iframe {
+        height: 240px;
     }
     
     #twitch-embed {
-        height: 300px;
+        height: 250px;
     }
     
     h1 {
@@ -1507,7 +1547,8 @@ section h2 {
     }
     
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
+        margin-bottom: 1rem !important;
     }
 }
 
