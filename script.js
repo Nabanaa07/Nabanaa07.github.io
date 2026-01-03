@@ -82,27 +82,19 @@ window.addEventListener('scroll', debounce(updateActiveNavLink, 50));
 // Twitch Live Detection System
 async function checkTwitchLiveStatus() {
     try {
-        // Use Twitch's public API endpoint (no auth required for basic stream check)
-        const response = await fetch(`https://twitchstatus.com/api/check?channel=${TWITCH_USERNAME}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        // Use decapi.me - a reliable public Twitch API proxy
+        const response = await fetch(`https://decapi.me/twitch/uptime/${TWITCH_USERNAME}`);
+        const text = await response.text();
         
-        if (!response.ok) {
-            // Fallback: Try alternative method using embed check
-            checkTwitchEmbed();
-            return;
-        }
+        // If response is a valid uptime (not "channel is offline"), stream is live
+        const isLive = !text.includes('offline') && !text.includes('error') && text.trim().length > 0;
         
-        const data = await response.json();
-        updateLiveStatus(data.live || false);
+        updateLiveStatus(isLive);
         
     } catch (error) {
-        console.log('Twitch API check failed, using fallback method');
-        // Fallback to embed check
-        checkTwitchEmbed();
+        console.log('Twitch live check failed:', error);
+        // Default to offline on error
+        updateLiveStatus(false);
     }
 }
 
