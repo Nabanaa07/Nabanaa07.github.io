@@ -515,32 +515,32 @@ async function loadChannelStats() {
     container.innerHTML = `
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon"><img src="icons/png/022-youtube-1.png" alt="YouTube" style="width: 48px; height: 48px;"></div>
+                <div class="stat-icon"><img src="icons/png/youtubecircle.png" alt="YouTube" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${formatViews(channelStats.subscribers)}</div>
                 <div class="stat-label">Subscribers</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><img src="icons/png/030-eye.png" alt="Views" style="width: 48px; height: 48px;"></div>
+                <div class="stat-icon"><img src="icons/png/coloredeye.png" alt="Views" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${formatViews(channelStats.totalViews)}</div>
                 <div class="stat-label">Total Channel Views</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><img src="icons/png/002-computer.png" alt="Videos" style="width: 48px; height: 48px;"></div>
+                <div class="stat-icon"><img src="icons/png/computerwithyoutubelogo.png" alt="Videos" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${channelStats.totalVideos}</div>
                 <div class="stat-label">Total Videos</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><img src="icons/png/032-statistics.png" alt="Stats" style="width: 48px; height: 48px;"></div>
+                <div class="stat-icon"><img src="icons/png/stats.png" alt="Stats" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${formatViews(avgViews)}</div>
                 <div class="stat-label">Avg Views Per Video</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><img src="icons/png/002-computer.png" alt="Videos" style="width: 48px; height: 48px;"></div>
+                <div class="stat-icon"><img src="icons/png/computerwithyoutubelogo.png" alt="Videos" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${regularVideos.length}</div>
                 <div class="stat-label">Regular Videos</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><span style="font-size: 48px;">📱</span></div>
+                <div class="stat-icon"><img src="icons/png/live.png" alt="Shorts" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${shorts.length}</div>
                 <div class="stat-label">Shorts</div>
             </div>

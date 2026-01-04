@@ -2425,9 +2425,17 @@ body[data-theme="extra-dark"] img[src*="004-computer"] {
     filter: brightness(0) invert(1);
 }
 
-/* Animated GIF icons in link cards - no filters */
+/* Animated GIF icons in link cards - remove white background */
 .link-card img[src$=".gif"] {
     filter: none !important;
+    mix-blend-mode: multiply;
+    background: transparent !important;
+}
+
+/* Alternative for dark themes */
+body[data-theme="dark"] .link-card img[src$=".gif"],
+body[data-theme="extra-dark"] .link-card img[src$=".gif"] {
+    mix-blend-mode: screen;
 }
 
 /* Static icons may need slight adjustments */
