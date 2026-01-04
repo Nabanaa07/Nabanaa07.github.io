@@ -258,8 +258,8 @@ async function fetchLatestVideos() {
         try {
             console.log('Fetching videos from YouTube API...');
             
-            // Get uploads playlist and channel info
-            const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${YOUTUBE_API_KEY}&id=${YOUTUBE_CHANNEL_ID}&part=contentDetails,snippet`;
+            // Get uploads playlist, channel info, and statistics
+            const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${YOUTUBE_API_KEY}&id=${YOUTUBE_CHANNEL_ID}&part=contentDetails,snippet,statistics`;
             const channelResponse = await fetch(channelUrl);
             
             if (!channelResponse.ok) {
@@ -275,6 +275,13 @@ async function fetchLatestVideos() {
                 name: channelData.items[0].snippet.title,
                 avatar: channelData.items[0].snippet.thumbnails.default.url
             };
+            
+            channelStats = {
+                subscribers: parseInt(channelData.items[0].statistics.subscriberCount),
+                totalViews: parseInt(channelData.items[0].statistics.viewCount),
+                totalVideos: parseInt(channelData.items[0].statistics.videoCount)
+            };
+            
             const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
             
             // Fetch videos from playlist
@@ -387,6 +394,7 @@ function createVideoCard(video) {
 let allVideos = [];
 let currentFilter = 'all';
 let currentView = 'grid';
+let channelStats = {};
 
 function createVideoCardWithInfo(video, viewType = 'grid') {
     const videoCard = document.createElement('div');
@@ -395,7 +403,7 @@ function createVideoCardWithInfo(video, viewType = 'grid') {
     videoCard.setAttribute('data-type', video.type);
     
     const durationBadge = video.type === 'short' 
-        ? `<div class="shorts-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4.5V6h4v-.5c0-.83-.67-1.5-1.5-1.5h-1c-.83 0-1.5.67-1.5 1.5zM16 6v-.5c0-1.93-1.57-3.5-3.5-3.5h-1C9.57 2 8 3.57 8 5.5V6H6v12h12V6h-2zm-4 7h-1.5v1.5H9V13h1.5v-1.5H12V13zm1.5 0H15v1.5h-1.5zm0-3H15V11.5h-1.5z"/></svg> Shorts</div>`
+        ? `<div class="shorts-badge"><img src="shorts-icon.png" alt="Shorts" style="width: 16px; height: 16px;"> Shorts</div>`
         : `<div class="duration-badge">${video.duration}</div>`;
     
     if (viewType === 'list') {
@@ -443,9 +451,73 @@ function createVideoCardWithInfo(video, viewType = 'grid') {
     return videoCard;
 }
 
+function renderChannelStats() {
+    const container = document.getElementById('videos-container');
+    if (!container) return;
+    
+    const totalVideoViews = allVideos.reduce((sum, v) => sum + v.views, 0);
+    const avgViews = Math.floor(totalVideoViews / allVideos.length) || 0;
+    const regularVideos = allVideos.filter(v => v.type === 'regular').length;
+    const shorts = allVideos.filter(v => v.type === 'short').length;
+    const mostViewed = [...allVideos].sort((a, b) => b.views - a.views)[0];
+    
+    container.className = 'videos-container stats-view';
+    container.innerHTML = `
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><img src="youtube-icon.png" alt="YouTube" style="width: 48px; height: 48px;"></div>
+                <div class="stat-value">${formatViews(channelStats.subscribers)}</div>
+                <div class="stat-label">Subscribers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👁️</div>
+                <div class="stat-value">${formatViews(channelStats.totalViews)}</div>
+                <div class="stat-label">Total Channel Views</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎬</div>
+                <div class="stat-value">${channelStats.totalVideos}</div>
+                <div class="stat-label">Total Videos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value">${formatViews(avgViews)}</div>
+                <div class="stat-label">Avg Views Per Video</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎥</div>
+                <div class="stat-value">${regularVideos}</div>
+                <div class="stat-label">Regular Videos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><img src="shorts-icon.png" alt="Shorts" style="width: 48px; height: 48px;"></div>
+                <div class="stat-value">${shorts}</div>
+                <div class="stat-label">Shorts</div>
+            </div>
+        </div>
+        ${mostViewed ? `
+            <div class="most-viewed-section">
+                <h3>Most Viewed Video</h3>
+                <div class="most-viewed-card">
+                    <img src="${mostViewed.thumbnail}" alt="${mostViewed.title}">
+                    <div class="most-viewed-info">
+                        <div class="most-viewed-title">${mostViewed.title}</div>
+                        <div class="most-viewed-stats">${formatViews(mostViewed.views)} views • ${timeAgo(mostViewed.publishedAt)}</div>
+                    </div>
+                </div>
+            </div>
+        ` : ''}
+    `;
+}
+
 function renderFilteredVideos() {
     const container = document.getElementById('videos-container');
     if (!container) return;
+    
+    if (currentFilter === 'stats') {
+        renderChannelStats();
+        return;
+    }
     
     container.innerHTML = '';
     container.className = `videos-container ${currentView}-view`;
@@ -478,7 +550,7 @@ function renderFilteredVideos() {
 }
 
 function initVideoFilters() {
-    const filterBtns = document.querySelectorAll('.filter-btn');
+    const filterBtns = document.querySelectorAll('.yt-tab');
     const viewBtns = document.querySelectorAll('.view-btn');
     
     filterBtns.forEach(btn => {

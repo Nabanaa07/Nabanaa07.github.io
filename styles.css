@@ -1187,39 +1187,54 @@ section h2 {
     padding-bottom: 177.78%; /* 9:16 aspect ratio for Shorts */
 }
 
-/* Video Filters */
-.video-filters {
+/* YouTube-style Tabs */
+.yt-tabs {
+    border-bottom: 1px solid var(--border-color);
+    margin: 2rem 0 2rem;
+}
+
+.yt-tabs-content {
     display: flex;
-    gap: 0.75rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 2rem 0;
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 0 1rem;
 }
 
-.filter-btn {
-    padding: 0.75rem 1.5rem;
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 50px;
+.yt-tab {
+    background: transparent;
+    border: none;
+    padding: 0 2rem 14px;
     color: var(--text-secondary);
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    position: relative;
+    transition: all 0.2s ease;
     font-family: inherit;
 }
 
-.filter-btn:hover {
-    border-color: var(--mint-green);
-    color: var(--mint-green);
-    transform: translateY(-2px);
+.yt-tab:hover {
+    color: var(--text-primary);
 }
 
-.filter-btn.active {
-    border-color: var(--mint-green);
-    background: rgba(111, 232, 164, 0.1);
-    color: var(--mint-green);
+.yt-tab.active {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.yt-tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    transition: background 0.2s ease;
+}
+
+.yt-tab.active .yt-tab-bar {
+    background: var(--text-primary);
 }
 
 /* View Toggle */
@@ -1316,6 +1331,98 @@ section h2 {
 .videos-container.list-view .play-button {
     width: 60px;
     height: 60px;
+}
+
+/* Stats Page */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--mint-green);
+    box-shadow: 0 10px 30px rgba(111, 232, 164, 0.1);
+}
+
+.stat-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-yellow);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.most-viewed-section {
+    margin-top: 3rem;
+}
+
+.most-viewed-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.most-viewed-card {
+    display: flex;
+    gap: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.most-viewed-card:hover {
+    border-color: var(--mint-green);
+    transform: translateY(-2px);
+}
+
+.most-viewed-card img {
+    width: 280px;
+    height: 157px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.most-viewed-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.most-viewed-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.most-viewed-stats {
+    font-size: 1rem;
+    color: var(--text-secondary);
 }
 
 .cta-section {
