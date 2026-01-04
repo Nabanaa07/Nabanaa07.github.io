@@ -207,77 +207,72 @@ function loadVideo(thumbnail) {
     console.log(`Loading video: ${videoId}`);
 }
 
-// YouTube Video Fetcher
-const YOUTUBE_CHANNEL_ID = 'UCxKj_T4p0HvGpvL8YMvMqEw'; // Nabana07 channel ID
-const YOUTUBE_USERNAME = 'Nabana07';
+// YouTube Configuration
+const YOUTUBE_CHANNEL_ID = 'UCxKj_T4p0HvGpvL8YMvMqEw'; // Nabana07's channel ID
+const MAX_VIDEOS = 15; // Number of videos to fetch
 
-// Fallback hardcoded videos if fetch fails
-// UPDATE THESE WITH YOUR VIDEO IDs AFTER ENABLING EMBEDDING
+// Fallback videos in case RSS feed fails
 const FALLBACK_VIDEOS = [
-    { videoId: 'mWRzp8LvAfk', title: 'Latest Video' },
-    { videoId: 'Kg5VEv9a3CA', title: 'Latest Short 1' },
-    { videoId: 'EOBi2gh-nEc', title: 'Latest Short 2' },
-    { videoId: 'ommrU9L2TTU', title: 'Latest Short 3' }
+    { videoId: 'mWRzp8LvAfk', title: 'Latest Video', type: 'regular' },
+    { videoId: 'Kg5VEv9a3CA', title: 'Short 1', type: 'short' }
 ];
 
+// Known shorts video IDs - update this when you publish new shorts
+const KNOWN_SHORTS = [
+    'Kg5VEv9a3CA',
+    'EOBi2gh-nEc',
+    'ommrU9L2TTU'
+];
+
+// Fetch videos from YouTube RSS feed
 async function fetchLatestVideos() {
     try {
-        // Method 1: Try RSS feed with CORS proxy
         const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
-        const corsProxy = 'https://api.allorigins.win/raw?url=';
+        const corsProxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
         
-        console.log('Fetching videos from YouTube...');
-        const response = await fetch(corsProxy + encodeURIComponent(rssUrl), {
-            method: 'GET',
-            headers: { 'Accept': 'application/xml' }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        const response = await fetch(corsProxy);
+        if (!response.ok) throw new Error('Failed to fetch RSS feed');
         
         const xmlText = await response.text();
-        console.log('Received XML response');
-        
-        // Parse XML
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
         
-        // Check for parse errors
-        const parseError = xmlDoc.querySelector('parsererror');
-        if (parseError) {
-            throw new Error('XML parsing failed');
-        }
+        // Check for parsing errors
+        const parserError = xmlDoc.querySelector('parsererror');
+        if (parserError) throw new Error('XML parsing failed');
         
         const entries = xmlDoc.querySelectorAll('entry');
-        console.log(`Found ${entries.length} videos`);
-        
         const videos = [];
+        
         entries.forEach((entry, index) => {
-            if (index < 9) { // Get up to 9 videos
-                const videoId = entry.querySelector('videoId')?.textContent || 
-                               entry.querySelector('yt\\:videoId')?.textContent;
-                const title = entry.querySelector('title')?.textContent;
-                const published = entry.querySelector('published')?.textContent;
-                const thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            if (index >= MAX_VIDEOS) return;
+            
+            const videoId = entry.querySelector('videoId')?.textContent;
+            const title = entry.querySelector('title')?.textContent;
+            
+            if (videoId && title) {
+                // Determine if it's a short based on KNOWN_SHORTS array
+                const isShort = KNOWN_SHORTS.includes(videoId);
                 
-                if (videoId) {
-                    videos.push({ videoId, title, published, thumbnail });
-                }
+                videos.push({
+                    videoId,
+                    title,
+                    type: isShort ? 'short' : 'regular',
+                    thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+                });
             }
         });
         
-        if (videos.length > 0) {
-            console.log(`Successfully loaded ${videos.length} videos`);
-            return videos;
-        }
+        if (videos.length === 0) throw new Error('No videos found in RSS feed');
         
-        throw new Error('No videos found in feed');
+        console.log(`Successfully loaded ${videos.length} videos from YouTube RSS`);
+        return videos;
         
     } catch (error) {
-        console.error('Failed to fetch YouTube videos:', error);
+        console.warn('Failed to fetch videos from RSS feed:', error);
         console.log('Using fallback videos');
-        // Return fallback videos
+        
+        // Return fallback videos with thumbnail URLs
         return FALLBACK_VIDEOS.map(v => ({
             ...v,
             thumbnail: `https://img.youtube.com/vi/${v.videoId}/maxresdefault.jpg`
@@ -311,12 +306,9 @@ function renderVideos(videos, containerId) {
     });
 }
 
-// Known Shorts video IDs (we'll categorize based on this)
-const KNOWN_SHORTS = ['Kg5VEv9a3CA', 'EOBi2gh-nEc', 'ommrU9L2TTU'];
-
-function isShort(videoId) {
-    // Check if video ID is in known shorts list
-    return KNOWN_SHORTS.includes(videoId);
+function isShort(video) {
+    // Check if video is marked as a short
+    return video.type === 'short';
 }
 
 function createVideoCard(video) {
@@ -342,6 +334,10 @@ async function loadYouTubeVideos() {
     const regularGrid = document.getElementById('regular-videos');
     const shortsGrid = document.getElementById('shorts-videos');
     
+    // Show loading state
+    if (regularGrid) regularGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">Loading videos...</p>';
+    if (shortsGrid) shortsGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">Loading shorts...</p>';
+    
     // Check if we're on the videos page
     if (!regularGrid && !shortsGrid) {
         const videosGrid = document.querySelector('.videos-grid');
@@ -357,21 +353,17 @@ async function loadYouTubeVideos() {
                 videosGrid.appendChild(createVideoCard(video));
             });
         } else {
-            videosGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">Failed to load videos. <a href="https://www.youtube.com/@Nabana07" target="_blank" style="color: var(--mint-green);">Visit YouTube channel</a></p>';
+            videosGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">No videos configured. <a href="https://www.youtube.com/@Nabana07" target="_blank" style="color: var(--mint-green);">Visit YouTube channel</a></p>';
         }
         return;
     }
-    
-    // Show loading state
-    if (regularGrid) regularGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">Loading videos...</p>';
-    if (shortsGrid) shortsGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">Loading shorts...</p>';
     
     const videos = await fetchLatestVideos();
     
     if (videos.length > 0) {
         // Separate videos and shorts
-        const regularVideos = videos.filter(v => !isShort(v.videoId));
-        const shorts = videos.filter(v => isShort(v.videoId));
+        const regularVideos = videos.filter(v => !isShort(v));
+        const shorts = videos.filter(v => isShort(v));
         
         // Render regular videos
         if (regularGrid) {
