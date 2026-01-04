@@ -265,7 +265,8 @@ async function fetchLatestVideos() {
                 return videos;
             }
         } catch (error) {
-            console.warn('YouTube API failed:', error.message);
+            console.error('YouTube API failed:', error);
+            console.log('Error details:', error.message);
             console.log('Falling back to RSS feed...');
         }
     }
