@@ -234,22 +234,41 @@ async function fetchLatestVideos() {
         try {
             console.log('Fetching videos from YouTube Data API v3...');
             
-            const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=${MAX_VIDEOS}&type=video`;
+            // Step 1: Get the channel's uploads playlist ID
+            const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${YOUTUBE_API_KEY}&id=${YOUTUBE_CHANNEL_ID}&part=contentDetails`;
+            const channelResponse = await fetch(channelUrl);
             
-            const response = await fetch(apiUrl);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error(`API Error ${response.status}:`, errorText);
-                throw new Error(`API returned ${response.status}`);
+            if (!channelResponse.ok) {
+                const errorText = await channelResponse.text();
+                console.error(`Channel API Error ${channelResponse.status}:`, errorText);
+                throw new Error(`Channel API returned ${channelResponse.status}`);
             }
             
-            const data = await response.json();
-            console.log('API Response:', data);
+            const channelData = await channelResponse.json();
             
-            if (data.items && data.items.length > 0) {
-                const videos = data.items.map(item => {
-                    const videoId = item.id.videoId;
+            if (!channelData.items || channelData.items.length === 0) {
+                throw new Error('Channel not found');
+            }
+            
+            const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
+            console.log('Found uploads playlist:', uploadsPlaylistId);
+            
+            // Step 2: Get videos from the uploads playlist
+            const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${YOUTUBE_API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=${MAX_VIDEOS}&order=date`;
+            const playlistResponse = await fetch(playlistUrl);
+            
+            if (!playlistResponse.ok) {
+                const errorText = await playlistResponse.text();
+                console.error(`Playlist API Error ${playlistResponse.status}:`, errorText);
+                throw new Error(`Playlist API returned ${playlistResponse.status}`);
+            }
+            
+            const playlistData = await playlistResponse.json();
+            console.log(`API found ${playlistData.items?.length || 0} videos`);
+            
+            if (playlistData.items && playlistData.items.length > 0) {
+                const videos = playlistData.items.map(item => {
+                    const videoId = item.snippet.resourceId.videoId;
                     const title = item.snippet.title;
                     const isShort = KNOWN_SHORTS.includes(videoId);
                     
