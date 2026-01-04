@@ -221,13 +221,45 @@ function parseDuration(duration) {
     return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds);
 }
 
+// Format seconds to MM:SS or HH:MM:SS
+function formatDuration(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+// Format view count (7200 -> 7.2K)
+function formatViews(views) {
+    if (views >= 1000000) return `${(views / 1000000).toFixed(1)}M`;
+    if (views >= 1000) return `${(views / 1000).toFixed(1)}K`;
+    return views.toString();
+}
+
+// Time ago (e.g., "1 day ago")
+function timeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 60) return 'just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days} day${days > 1 ? 's' : ''} ago`;
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${months} month${months > 1 ? 's' : ''} ago`;
+    const years = Math.floor(months / 12);
+    return `${years} year${years > 1 ? 's' : ''} ago`;
+}
+
 async function fetchLatestVideos() {
     if (YOUTUBE_API_KEY) {
         try {
             console.log('Fetching videos from YouTube API...');
             
-            // Get uploads playlist
-            const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${YOUTUBE_API_KEY}&id=${YOUTUBE_CHANNEL_ID}&part=contentDetails`;
+            // Get uploads playlist and channel info
+            const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${YOUTUBE_API_KEY}&id=${YOUTUBE_CHANNEL_ID}&part=contentDetails,snippet`;
             const channelResponse = await fetch(channelUrl);
             
             if (!channelResponse.ok) {
@@ -239,6 +271,10 @@ async function fetchLatestVideos() {
                 throw new Error('Channel not found');
             }
             
+            const channelInfo = {
+                name: channelData.items[0].snippet.title,
+                avatar: channelData.items[0].snippet.thumbnails.default.url
+            };
             const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
             
             // Fetch videos from playlist
@@ -269,16 +305,20 @@ async function fetchLatestVideos() {
                     const title = item.snippet.title;
                     const duration = item.contentDetails.duration;
                     const views = parseInt(item.statistics.viewCount) || 0;
+                    const publishedAt = new Date(item.snippet.publishedAt);
                     
-                    // Detect shorts: duration under 61 seconds
-                    const isShort = parseDuration(duration) <= 60;
+                    const isShort = title.toLowerCase().includes('#shorts');
                     
                     return {
                         videoId,
                         title,
                         type: isShort ? 'short' : 'regular',
                         views,
-                        thumbnail: item.snippet.thumbnails.high?.url || `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+                        publishedAt,
+                        duration: formatDuration(parseDuration(duration)),
+                        thumbnail: item.snippet.thumbnails.high?.url || `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+                        channelName: channelInfo.name,
+                        channelAvatar: channelInfo.avatar
                     };
                 });
                 
@@ -354,10 +394,15 @@ function createVideoCardWithInfo(video, viewType = 'grid') {
     videoCard.setAttribute('data-video-id', video.videoId);
     videoCard.setAttribute('data-type', video.type);
     
+    const durationBadge = video.type === 'short' 
+        ? `<div class="shorts-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4.5V6h4v-.5c0-.83-.67-1.5-1.5-1.5h-1c-.83 0-1.5.67-1.5 1.5zM16 6v-.5c0-1.93-1.57-3.5-3.5-3.5h-1C9.57 2 8 3.57 8 5.5V6H6v12h12V6h-2zm-4 7h-1.5v1.5H9V13h1.5v-1.5H12V13zm1.5 0H15v1.5h-1.5zm0-3H15V11.5h-1.5z"/></svg> Shorts</div>`
+        : `<div class="duration-badge">${video.duration}</div>`;
+    
     if (viewType === 'list') {
         videoCard.innerHTML = `
             <div class="video-thumbnail" onclick="loadVideo(this)">
                 <img src="${video.thumbnail}" alt="${video.title}" onerror="this.src='https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg'">
+                ${durationBadge}
                 <div class="play-button">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
                         <path d="M8 5v14l11-7z"/>
@@ -366,17 +411,30 @@ function createVideoCardWithInfo(video, viewType = 'grid') {
             </div>
             <div class="video-info">
                 <div class="video-title">${video.title}</div>
-                <div class="video-meta">${video.type === 'short' ? '📱 Short' : '🎬 Video'}</div>
+                <div class="video-meta">
+                    <span>${formatViews(video.views)} views</span>
+                    <span> • </span>
+                    <span>${timeAgo(video.publishedAt)}</span>
+                </div>
             </div>
         `;
     } else {
         videoCard.innerHTML = `
             <div class="video-thumbnail" onclick="loadVideo(this)">
                 <img src="${video.thumbnail}" alt="${video.title}" onerror="this.src='https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg'">
+                ${durationBadge}
                 <div class="play-button">
                     <svg width="64" height="64" viewBox="0 0 24 24" fill="white">
                         <path d="M8 5v14l11-7z"/>
                     </svg>
+                </div>
+            </div>
+            <div class="video-metadata">
+                <img src="${video.channelAvatar}" alt="${video.channelName}" class="channel-avatar">
+                <div class="video-details">
+                    <div class="video-title">${video.title}</div>
+                    <div class="video-channel">${video.channelName}</div>
+                    <div class="video-stats">${formatViews(video.views)} views • ${timeAgo(video.publishedAt)}</div>
                 </div>
             </div>
         `;
