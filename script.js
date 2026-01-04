@@ -419,9 +419,133 @@ function createVideoCard(video) {
     return videoCard;
 }
 
+// Global videos storage
+let allVideos = [];
+let currentFilter = 'all';
+let currentView = 'grid';
+
+// Create video card with metadata for list view
+function createVideoCardWithInfo(video, viewType = 'grid') {
+    const videoCard = document.createElement('div');
+    videoCard.className = 'video-card';
+    videoCard.setAttribute('data-video-id', video.videoId);
+    videoCard.setAttribute('data-type', video.type);
+    
+    if (viewType === 'list') {
+        videoCard.innerHTML = `
+            <div class="video-thumbnail" onclick="loadVideo(this)">
+                <img src="${video.thumbnail}" alt="${video.title}" onerror="this.src='https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg'">
+                <div class="play-button">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="video-info">
+                <div class="video-title">${video.title}</div>
+                <div class="video-meta">${video.type === 'short' ? '📱 Short' : '🎬 Video'}</div>
+            </div>
+        `;
+    } else {
+        videoCard.innerHTML = `
+            <div class="video-thumbnail" onclick="loadVideo(this)">
+                <img src="${video.thumbnail}" alt="${video.title}" onerror="this.src='https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg'">
+                <div class="play-button">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+        `;
+    }
+    
+    return videoCard;
+}
+
+// Filter and render videos
+function renderFilteredVideos() {
+    const container = document.getElementById('videos-container');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    container.className = `videos-container ${currentView}-view`;
+    
+    let filteredVideos = [];
+    
+    switch (currentFilter) {
+        case 'all':
+            filteredVideos = allVideos;
+            break;
+        case 'latest':
+            filteredVideos = allVideos.filter(v => v.type === 'regular');
+            break;
+        case 'shorts':
+            filteredVideos = allVideos.filter(v => v.type === 'short');
+            break;
+        case 'popular':
+            // For now, just show all videos (would need view counts from API)
+            filteredVideos = [...allVideos];
+            break;
+    }
+    
+    if (filteredVideos.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 3rem;">No videos found for this filter.</p>';
+        return;
+    }
+    
+    filteredVideos.forEach(video => {
+        container.appendChild(createVideoCardWithInfo(video, currentView));
+    });
+}
+
+// Initialize video filters
+function initVideoFilters() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const viewBtns = document.querySelectorAll('.view-btn');
+    
+    // Filter button handlers
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.getAttribute('data-filter');
+            renderFilteredVideos();
+        });
+    });
+    
+    // View toggle handlers
+    viewBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            viewBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentView = btn.getAttribute('data-view');
+            renderFilteredVideos();
+        });
+    });
+}
+
 async function loadYouTubeVideos() {
+    const container = document.getElementById('videos-container');
     const regularGrid = document.getElementById('regular-videos');
     const shortsGrid = document.getElementById('shorts-videos');
+    
+    // Check if we're on the new videos page with filters
+    if (container) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 3rem;">Loading videos...</p>';
+        
+        const videos = await fetchLatestVideos();
+        allVideos = videos;
+        
+        if (videos.length > 0) {
+            renderFilteredVideos();
+            initVideoFilters();
+        } else {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 3rem;">Failed to load videos. <a href="https://www.youtube.com/@Nabana07" target="_blank" style="color: var(--mint-green);">Visit YouTube channel</a></p>';
+        }
+        return;
+    }
+    
+    // Legacy code for old video pages
     
     // Show loading state
     if (regularGrid) regularGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">Loading videos...</p>';
