@@ -1085,13 +1085,16 @@ section h2 {
 .shorts-badge {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     padding: 4px 8px;
 }
 
 .shorts-badge img {
     display: block;
     flex-shrink: 0;
+    margin-right: 2px;
+    position: relative;
+    top: 1px;
 }
 
 .video-metadata {

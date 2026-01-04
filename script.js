@@ -403,7 +403,7 @@ function createVideoCardWithInfo(video, viewType = 'grid') {
     videoCard.setAttribute('data-type', video.type);
     
     const durationBadge = video.type === 'short' 
-        ? `<div class="shorts-badge"><img src="shorts-icon.png" alt="Shorts" style="width: 16px; height: 16px;"> Shorts</div>`
+        ? `<div class="shorts-badge"><img src="icons/shorts-icon.png" alt="Shorts" style="width: 16px; height: 16px;"> Shorts</div>`
         : `<div class="duration-badge">${video.duration}</div>`;
     
     if (viewType === 'list') {
@@ -473,32 +473,32 @@ async function loadChannelStats() {
     container.innerHTML = `
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon"><img src="youtube-icon.png" alt="YouTube" style="width: 48px; height: 48px;"></div>
+                <div class="stat-icon"><img src="icons/youtube-icon.png" alt="YouTube" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${formatViews(channelStats.subscribers)}</div>
                 <div class="stat-label">Subscribers</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                <div class="stat-icon"><img src="icons/lcd-monitor-with-play-symbol-on-screen.png" alt="Views" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${formatViews(channelStats.totalViews)}</div>
                 <div class="stat-label">Total Channel Views</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></div>
+                <div class="stat-icon"><img src="icons/video-player.png" alt="Videos" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${channelStats.totalVideos}</div>
                 <div class="stat-label">Total Videos</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.5l6-6 4 4L22 6.9l-1.4-1.4-7.9 7.9-4-4-7.6 7.6 1.4 1.4z"/></svg></div>
+                <div class="stat-icon"><img src="icons/stats.png" alt="Stats" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${formatViews(avgViews)}</div>
                 <div class="stat-label">Avg Views Per Video</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+                <div class="stat-icon"><img src="icons/video-player.png" alt="Videos" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${regularVideos.length}</div>
                 <div class="stat-label">Regular Videos</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><img src="shorts-icon.png" alt="Shorts" style="width: 48px; height: 48px;"></div>
+                <div class="stat-icon"><img src="icons/shorts-icon.png" alt="Shorts" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${shorts.length}</div>
                 <div class="stat-label">Shorts</div>
             </div>
