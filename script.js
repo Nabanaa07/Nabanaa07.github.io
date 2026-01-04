@@ -211,6 +211,9 @@ function loadVideo(thumbnail) {
 const YOUTUBE_CHANNEL_ID = 'UCxKj_T4p0HvGpvL8YMvMqEw'; // Nabana07's channel ID
 const MAX_VIDEOS = 15; // Number of videos to fetch
 
+// YouTube Data API v3 key
+const YOUTUBE_API_KEY = 'AIzaSyAs1lIFGHmWwyxANPaDsnd82Wl2VfXSNN0';
+
 // Fallback videos in case RSS feed fails
 const FALLBACK_VIDEOS = [
     { videoId: 'mWRzp8LvAfk', title: 'Latest Video', type: 'regular' },
@@ -224,11 +227,48 @@ const KNOWN_SHORTS = [
     'ommrU9L2TTU'
 ];
 
-// Fetch videos from YouTube RSS feed
+// Fetch videos from YouTube using API v3 or RSS fallback
 async function fetchLatestVideos() {
-    const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
+    // Try YouTube Data API v3 first (if API key is provided)
+    if (YOUTUBE_API_KEY) {
+        try {
+            console.log('Fetching videos from YouTube Data API v3...');
+            
+            const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=${MAX_VIDEOS}&type=video`;
+            
+            const response = await fetch(apiUrl);
+            
+            if (!response.ok) {
+                throw new Error(`API returned ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.items && data.items.length > 0) {
+                const videos = data.items.map(item => {
+                    const videoId = item.id.videoId;
+                    const title = item.snippet.title;
+                    const isShort = KNOWN_SHORTS.includes(videoId);
+                    
+                    return {
+                        videoId,
+                        title,
+                        type: isShort ? 'short' : 'regular',
+                        thumbnail: item.snippet.thumbnails.high?.url || `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+                    };
+                });
+                
+                console.log(`Successfully loaded ${videos.length} videos from YouTube API`);
+                return videos;
+            }
+        } catch (error) {
+            console.warn('YouTube API failed:', error.message);
+            console.log('Falling back to RSS feed...');
+        }
+    }
     
-    // Try multiple CORS proxies in order
+    // Fallback to RSS feed with CORS proxies
+    const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
     const corsProxies = [
         `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
         `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`,
@@ -237,65 +277,37 @@ async function fetchLatestVideos() {
     
     for (const proxyUrl of corsProxies) {
         try {
-            console.log('Trying to fetch YouTube RSS feed...');
+            console.log('Trying RSS feed via CORS proxy...');
             const response = await fetch(proxyUrl, { 
                 method: 'GET',
-                signal: AbortSignal.timeout(5000) // 5 second timeout
+                signal: AbortSignal.timeout(5000)
             });
             
-            if (!response.ok) {
-                console.log(`Response not OK: ${response.status}`);
-                continue;
-            }
+            if (!response.ok) continue;
             
             const xmlText = await response.text();
-            console.log('Received XML response');
             
-            // Check if response is actually XML
-            if (!xmlText.includes('<?xml') && !xmlText.includes('<feed')) {
-                console.log('Response is not XML, trying next proxy');
-                continue;
-            }
+            if (!xmlText.includes('<?xml') && !xmlText.includes('<feed')) continue;
             
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
             
-            // Check for parsing errors
-            const parserError = xmlDoc.querySelector('parsererror');
-            if (parserError) {
-                console.log('XML parsing error detected, trying next proxy');
-                continue;
-            }
+            if (xmlDoc.querySelector('parsererror')) continue;
             
-            // Try to find entries (YouTube RSS uses 'entry' tags)
             let entries = xmlDoc.querySelectorAll('entry');
-            
-            // Also try with namespace (some feeds use yt:videoId)
-            if (entries.length === 0) {
-                entries = xmlDoc.getElementsByTagName('entry');
-            }
-            
-            if (entries.length === 0) {
-                console.log('No video entries found, trying next proxy');
-                continue;
-            }
+            if (entries.length === 0) entries = xmlDoc.getElementsByTagName('entry');
+            if (entries.length === 0) continue;
             
             const videos = [];
-            console.log(`Found ${entries.length} video entries`);
             
             entries.forEach((entry, index) => {
                 if (index >= MAX_VIDEOS) return;
                 
-                // Try multiple ways to extract video ID (different XML namespaces)
                 let videoId = entry.querySelector('videoId')?.textContent;
-                
-                // Try with yt: namespace
                 if (!videoId) {
                     const ytVideoId = entry.getElementsByTagName('yt:videoId')[0];
                     videoId = ytVideoId?.textContent;
                 }
-                
-                // Try extracting from link element
                 if (!videoId) {
                     const link = entry.querySelector('link')?.getAttribute('href');
                     if (link) {
@@ -307,9 +319,7 @@ async function fetchLatestVideos() {
                 const title = entry.querySelector('title')?.textContent;
                 
                 if (videoId && title) {
-                    // Determine if it's a short based on KNOWN_SHORTS array
                     const isShort = KNOWN_SHORTS.includes(videoId);
-                    
                     videos.push({
                         videoId,
                         title,
@@ -320,18 +330,16 @@ async function fetchLatestVideos() {
             });
             
             if (videos.length > 0) {
-                console.log(`Successfully loaded ${videos.length} videos from YouTube RSS`);
+                console.log(`Successfully loaded ${videos.length} videos from RSS feed`);
                 return videos;
             }
-            
         } catch (error) {
-            console.log(`Proxy failed, trying next...`);
             continue;
         }
     }
     
-    // All proxies failed, use fallback
-    console.warn('All RSS fetch methods failed, using fallback videos');
+    // All methods failed, use fallback
+    console.warn('All fetch methods failed, using fallback videos');
     return FALLBACK_VIDEOS.map(v => ({
         ...v,
         thumbnail: `https://img.youtube.com/vi/${v.videoId}/maxresdefault.jpg`
