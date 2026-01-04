@@ -1095,6 +1095,8 @@ section h2 {
     justify-content: center;
     gap: 4px;
     padding: 4px 8px;
+    bottom: 12px;
+    right: 12px;
 }
 
 .shorts-badge span {
@@ -1514,6 +1516,7 @@ section h2 {
 .social-links .social-link {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 1rem;
     padding: 1.5rem;
     background: var(--card-bg);
@@ -1522,11 +1525,12 @@ section h2 {
     color: var(--text-secondary);
     text-decoration: none;
     transition: all 0.3s ease;
+    transform-origin: bottom;
 }
 
 .social-links .social-link:hover {
     border-color: var(--mint-green);
-    transform: translateX(10px);
+    transform: translateY(-5px);
     color: var(--mint-green);
 }
 
