@@ -207,166 +207,90 @@ function loadVideo(thumbnail) {
     console.log(`Loading video: ${videoId}`);
 }
 
-// YouTube Configuration
-const YOUTUBE_CHANNEL_ID = 'UCUehKKFJqxTRTzZWoqB9taw'; // Nabana07's channel ID
-const MAX_VIDEOS = 50; // Number of videos to fetch (increased for filtering)
-
-// YouTube Data API v3 key
+// YouTube setup
+const YOUTUBE_CHANNEL_ID = 'UCUehKKFJqxTRTzZWoqB9taw';
+const MAX_VIDEOS = 50;
 const YOUTUBE_API_KEY = 'AIzaSyAs1lIFGHmWwyxANPaDsnd82Wl2VfXSNN0';
 
-// Fallback videos in case RSS feed fails
-const FALLBACK_VIDEOS = [
-    { videoId: 'mWRzp8LvAfk', title: 'Latest Video', type: 'regular' },
-    { videoId: 'Kg5VEv9a3CA', title: 'Short 1', type: 'short' }
-];
+// Parse YouTube duration format (PT1M30S) to seconds
+function parseDuration(duration) {
+    const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+    const hours = (match[1] || '').replace('H', '') || 0;
+    const minutes = (match[2] || '').replace('M', '') || 0;
+    const seconds = (match[3] || '').replace('S', '') || 0;
+    return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds);
+}
 
-// Known shorts video IDs - update this when you publish new shorts
-const KNOWN_SHORTS = [
-    'Kg5VEv9a3CA',
-    'EOBi2gh-nEc',
-    'ommrU9L2TTU'
-];
-
-// Fetch videos from YouTube using API v3 or RSS fallback
 async function fetchLatestVideos() {
-    // Try YouTube Data API v3 first (if API key is provided)
     if (YOUTUBE_API_KEY) {
         try {
-            console.log('Fetching videos from YouTube Data API v3...');
+            console.log('Fetching videos from YouTube API...');
             
-            // Step 1: Get the channel's uploads playlist ID
+            // Get uploads playlist
             const channelUrl = `https://www.googleapis.com/youtube/v3/channels?key=${YOUTUBE_API_KEY}&id=${YOUTUBE_CHANNEL_ID}&part=contentDetails`;
             const channelResponse = await fetch(channelUrl);
             
             if (!channelResponse.ok) {
-                const errorText = await channelResponse.text();
-                console.error(`Channel API Error ${channelResponse.status}:`, errorText);
-                throw new Error(`Channel API returned ${channelResponse.status}`);
+                throw new Error(`Channel API error: ${channelResponse.status}`);
             }
             
             const channelData = await channelResponse.json();
-            
             if (!channelData.items || channelData.items.length === 0) {
                 throw new Error('Channel not found');
             }
             
             const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
-            console.log('Found uploads playlist:', uploadsPlaylistId);
             
-            // Step 2: Get videos from the uploads playlist
-            const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${YOUTUBE_API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=${MAX_VIDEOS}&order=date`;
+            // Fetch videos from playlist
+            const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?key=${YOUTUBE_API_KEY}&playlistId=${uploadsPlaylistId}&part=snippet&maxResults=${MAX_VIDEOS}`;
             const playlistResponse = await fetch(playlistUrl);
             
             if (!playlistResponse.ok) {
-                const errorText = await playlistResponse.text();
-                console.error(`Playlist API Error ${playlistResponse.status}:`, errorText);
-                throw new Error(`Playlist API returned ${playlistResponse.status}`);
+                throw new Error(`Playlist API error: ${playlistResponse.status}`);
             }
             
             const playlistData = await playlistResponse.json();
-            console.log(`API found ${playlistData.items?.length || 0} videos`);
             
             if (playlistData.items && playlistData.items.length > 0) {
-                const videos = playlistData.items.map(item => {
-                    const videoId = item.snippet.resourceId.videoId;
+                const videoIds = playlistData.items.map(item => item.snippet.resourceId.videoId);
+                
+                // Get video details including duration and view counts
+                const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${YOUTUBE_API_KEY}&id=${videoIds.join(',')}&part=snippet,contentDetails,statistics`;
+                const detailsResponse = await fetch(detailsUrl);
+                
+                if (!detailsResponse.ok) {
+                    throw new Error(`Video details API error: ${detailsResponse.status}`);
+                }
+                
+                const detailsData = await detailsResponse.json();
+                
+                const videos = detailsData.items.map(item => {
+                    const videoId = item.id;
                     const title = item.snippet.title;
-                    const isShort = KNOWN_SHORTS.includes(videoId);
+                    const duration = item.contentDetails.duration;
+                    const views = parseInt(item.statistics.viewCount) || 0;
+                    
+                    // Detect shorts: duration under 61 seconds
+                    const isShort = parseDuration(duration) <= 60;
                     
                     return {
                         videoId,
                         title,
                         type: isShort ? 'short' : 'regular',
+                        views,
                         thumbnail: item.snippet.thumbnails.high?.url || `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
                     };
                 });
                 
-                console.log(`Successfully loaded ${videos.length} videos from YouTube API`);
+                console.log(`Loaded ${videos.length} videos`);
                 return videos;
             }
         } catch (error) {
             console.error('YouTube API failed:', error);
-            console.log('Error details:', error.message);
-            console.log('Falling back to RSS feed...');
         }
     }
     
-    // Fallback to RSS feed with CORS proxies
-    const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
-    const corsProxies = [
-        `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`
-    ];
-    
-    for (const proxyUrl of corsProxies) {
-        try {
-            console.log('Trying RSS feed via CORS proxy...');
-            const response = await fetch(proxyUrl, { 
-                method: 'GET',
-                signal: AbortSignal.timeout(5000)
-            });
-            
-            if (!response.ok) continue;
-            
-            const xmlText = await response.text();
-            
-            if (!xmlText.includes('<?xml') && !xmlText.includes('<feed')) continue;
-            
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-            
-            if (xmlDoc.querySelector('parsererror')) continue;
-            
-            let entries = xmlDoc.querySelectorAll('entry');
-            if (entries.length === 0) entries = xmlDoc.getElementsByTagName('entry');
-            if (entries.length === 0) continue;
-            
-            const videos = [];
-            
-            entries.forEach((entry, index) => {
-                if (index >= MAX_VIDEOS) return;
-                
-                let videoId = entry.querySelector('videoId')?.textContent;
-                if (!videoId) {
-                    const ytVideoId = entry.getElementsByTagName('yt:videoId')[0];
-                    videoId = ytVideoId?.textContent;
-                }
-                if (!videoId) {
-                    const link = entry.querySelector('link')?.getAttribute('href');
-                    if (link) {
-                        const match = link.match(/watch\?v=([^&]+)/);
-                        videoId = match?.[1];
-                    }
-                }
-                
-                const title = entry.querySelector('title')?.textContent;
-                
-                if (videoId && title) {
-                    const isShort = KNOWN_SHORTS.includes(videoId);
-                    videos.push({
-                        videoId,
-                        title,
-                        type: isShort ? 'short' : 'regular',
-                        thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
-                    });
-                }
-            });
-            
-            if (videos.length > 0) {
-                console.log(`Successfully loaded ${videos.length} videos from RSS feed`);
-                return videos;
-            }
-        } catch (error) {
-            continue;
-        }
-    }
-    
-    // All methods failed, use fallback
-    console.warn('All fetch methods failed, using fallback videos');
-    return FALLBACK_VIDEOS.map(v => ({
-        ...v,
-        thumbnail: `https://img.youtube.com/vi/${v.videoId}/maxresdefault.jpg`
-    }));
+    return [];
 }
 
 function renderVideos(videos, containerId) {
@@ -481,8 +405,7 @@ function renderFilteredVideos() {
             filteredVideos = allVideos.filter(v => v.type === 'short');
             break;
         case 'popular':
-            // For now, just show all videos (would need view counts from API)
-            filteredVideos = [...allVideos];
+            filteredVideos = [...allVideos].sort((a, b) => b.views - a.views);
             break;
     }
     
