@@ -419,12 +419,11 @@ function createVideoCard(video) {
     return videoCard;
 }
 
-// Global videos storage
+// Store all videos for filtering
 let allVideos = [];
 let currentFilter = 'all';
 let currentView = 'grid';
 
-// Create video card with metadata for list view
 function createVideoCardWithInfo(video, viewType = 'grid') {
     const videoCard = document.createElement('div');
     videoCard.className = 'video-card';
@@ -462,7 +461,6 @@ function createVideoCardWithInfo(video, viewType = 'grid') {
     return videoCard;
 }
 
-// Filter and render videos
 function renderFilteredVideos() {
     const container = document.getElementById('videos-container');
     if (!container) return;
@@ -498,12 +496,10 @@ function renderFilteredVideos() {
     });
 }
 
-// Initialize video filters
 function initVideoFilters() {
     const filterBtns = document.querySelectorAll('.filter-btn');
     const viewBtns = document.querySelectorAll('.view-btn');
     
-    // Filter button handlers
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             filterBtns.forEach(b => b.classList.remove('active'));
@@ -513,7 +509,6 @@ function initVideoFilters() {
         });
     });
     
-    // View toggle handlers
     viewBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             viewBtns.forEach(b => b.classList.remove('active'));
@@ -529,9 +524,9 @@ async function loadYouTubeVideos() {
     const regularGrid = document.getElementById('regular-videos');
     const shortsGrid = document.getElementById('shorts-videos');
     
-    // Check if we're on the new videos page with filters
+    // New videos page with filters
     if (container) {
-        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 3rem;">Loading videos...</p>';
+        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 3rem;">Loading...</p>';
         
         const videos = await fetchLatestVideos();
         allVideos = videos;
@@ -540,12 +535,12 @@ async function loadYouTubeVideos() {
             renderFilteredVideos();
             initVideoFilters();
         } else {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 3rem;">Failed to load videos. <a href="https://www.youtube.com/@Nabana07" target="_blank" style="color: var(--mint-green);">Visit YouTube channel</a></p>';
+            container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 3rem;">Couldn\'t load videos. <a href="https://www.youtube.com/@Nabana07" target="_blank" style="color: var(--mint-green);">Check YouTube</a></p>';
         }
         return;
     }
     
-    // Legacy code for old video pages
+    // Old video grid code
     
     // Show loading state
     if (regularGrid) regularGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">Loading videos...</p>';
@@ -750,51 +745,41 @@ function initMobileMenu() {
     }
 }
 
-// Initialize on page load
+// Page init
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initThemeSwitcher();
     updateActiveNavLink();
     
-    // Load YouTube videos if on videos page
-    if (document.querySelector('.videos-grid')) {
+    // Load videos if we're on videos page
+    if (document.querySelector('.videos-grid') || document.getElementById('videos-container')) {
         loadYouTubeVideos();
     }
     
-    // Check Twitch live status immediately
+    // Start checking Twitch status
     checkTwitchLiveStatus();
-    
-    // Set up interval to check periodically
     setInterval(checkTwitchLiveStatus, CHECK_INTERVAL);
     
-    // Add fade-in animation to sections on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
+    // Fade-in on scroll
+    const fadeObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
             }
         });
-    }, observerOptions);
+    }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
     
-    // Observe all sections for fade-in effect
     document.querySelectorAll('section').forEach(section => {
         section.style.opacity = '0';
         section.style.transform = 'translateY(20px)';
         section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-        observer.observe(section);
+        fadeObserver.observe(section);
     });
     
-    // Smooth reveal for hero content
-    setTimeout(() => {
-        const heroContent = document.querySelector('.hero-content');
-        if (heroContent) {
-            heroContent.style.opacity = '1';
-        }
-    }, 100);
+    // Hero fade in
+    const hero = document.querySelector('.hero-content');
+    if (hero) {
+        setTimeout(() => hero.style.opacity = '1', 100);
+    }
 });
