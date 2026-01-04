@@ -239,10 +239,13 @@ async function fetchLatestVideos() {
             const response = await fetch(apiUrl);
             
             if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`API Error ${response.status}:`, errorText);
                 throw new Error(`API returned ${response.status}`);
             }
             
             const data = await response.json();
+            console.log('API Response:', data);
             
             if (data.items && data.items.length > 0) {
                 const videos = data.items.map(item => {
