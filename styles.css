@@ -2029,7 +2029,7 @@ section h2 {
     vertical-align: middle;
 }
 
-/* Make dark icons visible on different backgrounds */
+/* Make dark/black icons visible on different backgrounds */
 body[data-theme="light"] .dark-icon,
 body[data-theme="egirl"] .dark-icon,
 body[data-theme="chocolate"] .dark-icon {
@@ -2042,9 +2042,50 @@ body[data-theme="banana"] .dark-icon {
     filter: brightness(0) invert(1); /* Make dark icons white on dark backgrounds */
 }
 
-/* For icons in hero CTAs */
-.cta-button img {
-    filter: brightness(0) invert(1); /* Always white on colored buttons */
+/* Light mode icon - make brighter on dark backgrounds */
+body[data-theme="dark"] img[src*="light-mode"],
+body[data-theme="extradark"] img[src*="light-mode"],
+body[data-theme="banana"] img[src*="light-mode"] {
+    filter: brightness(2);
+}
+
+body[data-theme="light"] img[src*="light-mode"],
+body[data-theme="egirl"] img[src*="light-mode"],
+body[data-theme="chocolate"] img[src*="light-mode"] {
+    filter: brightness(0.7); /* Slightly darker on light backgrounds */
+}
+
+/* Musical notes icon - make brighter on dark backgrounds */
+body[data-theme="dark"] img[src*="musical-notes"],
+body[data-theme="extradark"] img[src*="musical-notes"],
+body[data-theme="banana"] img[src*="musical-notes"] {
+    filter: brightness(1.5);
+}
+
+/* For icons in hero CTAs - keep colored icons like Discord/YouTube/Twitch as-is */
+.btn img:not([src*="discord"]):not([src*="youtube"]):not([src*="twitch"]) {
+    filter: brightness(0) invert(1); /* Only invert non-colored icons */
+}
+
+/* Never filter colored icons in link cards and social icons */
+.link-card img[src*="discord"],
+.link-card img[src*="youtube"],
+.link-card img[src*="twitch"],
+.link-card img[src*="egirlgamer"],
+.link-card img[src*="musical-notes"],
+.social-link img[src*="discord"],
+.social-link img[src*="youtube"],
+.social-link img[src*="twitch"],
+.social-link img[src*="egirlgamer"],
+.social-link img[src*="musical-notes"] {
+    filter: none !important; /* Keep colored icons as-is */
+}
+
+/* Only filter the black/dark monitor icon on dark themes */
+body[data-theme="dark"] .link-card img[src*="lcd-monitor"],
+body[data-theme="extradark"] .link-card img[src*="lcd-monitor"],
+body[data-theme="banana"] .link-card img[src*="lcd-monitor"] {
+    filter: brightness(0) invert(1);
 }
 
 /* Override max-width for theme menu */
