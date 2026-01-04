@@ -1086,6 +1086,12 @@ section h2 {
     display: flex;
     align-items: center;
     gap: 4px;
+    padding: 4px 8px;
+}
+
+.shorts-badge img {
+    display: block;
+    flex-shrink: 0;
 }
 
 .video-metadata {
@@ -1423,6 +1429,32 @@ section h2 {
 .most-viewed-stats {
     font-size: 1rem;
     color: var(--text-secondary);
+}
+
+/* Charts */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+}
+
+.chart-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2rem;
+    min-height: 400px;
+}
+
+.chart-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.chart-card canvas {
+    max-height: 350px;
 }
 
 .cta-section {

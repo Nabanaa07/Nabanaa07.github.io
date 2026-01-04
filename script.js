@@ -451,17 +451,25 @@ function createVideoCardWithInfo(video, viewType = 'grid') {
     return videoCard;
 }
 
-function renderChannelStats() {
-    const container = document.getElementById('videos-container');
+async function loadChannelStats() {
+    const container = document.getElementById('stats-container');
     if (!container) return;
     
-    const totalVideoViews = allVideos.reduce((sum, v) => sum + v.views, 0);
-    const avgViews = Math.floor(totalVideoViews / allVideos.length) || 0;
-    const regularVideos = allVideos.filter(v => v.type === 'regular').length;
-    const shorts = allVideos.filter(v => v.type === 'short').length;
-    const mostViewed = [...allVideos].sort((a, b) => b.views - a.views)[0];
+    const videos = await fetchLatestVideos();
+    if (videos.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 3rem;">Failed to load stats</p>';
+        return;
+    }
     
-    container.className = 'videos-container stats-view';
+    allVideos = videos;
+    
+    const totalVideoViews = videos.reduce((sum, v) => sum + v.views, 0);
+    const avgViews = Math.floor(totalVideoViews / videos.length) || 0;
+    const regularVideos = videos.filter(v => v.type === 'regular');
+    const shorts = videos.filter(v => v.type === 'short');
+    const mostViewed = [...videos].sort((a, b) => b.views - a.views)[0];
+    const topVideos = [...videos].sort((a, b) => b.views - a.views).slice(0, 10);
+    
     container.innerHTML = `
         <div class="stats-grid">
             <div class="stat-card">
@@ -470,31 +478,43 @@ function renderChannelStats() {
                 <div class="stat-label">Subscribers</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">👁️</div>
+                <div class="stat-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
                 <div class="stat-value">${formatViews(channelStats.totalViews)}</div>
                 <div class="stat-label">Total Channel Views</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">🎬</div>
+                <div class="stat-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></div>
                 <div class="stat-value">${channelStats.totalVideos}</div>
                 <div class="stat-label">Total Videos</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">📊</div>
+                <div class="stat-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.5l6-6 4 4L22 6.9l-1.4-1.4-7.9 7.9-4-4-7.6 7.6 1.4 1.4z"/></svg></div>
                 <div class="stat-value">${formatViews(avgViews)}</div>
                 <div class="stat-label">Avg Views Per Video</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">🎥</div>
-                <div class="stat-value">${regularVideos}</div>
+                <div class="stat-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+                <div class="stat-value">${regularVideos.length}</div>
                 <div class="stat-label">Regular Videos</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon"><img src="shorts-icon.png" alt="Shorts" style="width: 48px; height: 48px;"></div>
-                <div class="stat-value">${shorts}</div>
+                <div class="stat-value">${shorts.length}</div>
                 <div class="stat-label">Shorts</div>
             </div>
         </div>
+        
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3>Top 10 Videos by Views</h3>
+                <canvas id="topVideosChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Videos vs Shorts</h3>
+                <canvas id="contentTypeChart"></canvas>
+            </div>
+        </div>
+        
         ${mostViewed ? `
             <div class="most-viewed-section">
                 <h3>Most Viewed Video</h3>
@@ -508,6 +528,87 @@ function renderChannelStats() {
             </div>
         ` : ''}
     `;
+    
+    // Create charts
+    setTimeout(() => {
+        createTopVideosChart(topVideos);
+        createContentTypeChart(regularVideos.length, shorts.length);
+    }, 100);
+}
+
+function createTopVideosChart(videos) {
+    const ctx = document.getElementById('topVideosChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: videos.map((v, i) => `Video ${i + 1}`),
+            datasets: [{
+                label: 'Views',
+                data: videos.map(v => v.views),
+                backgroundColor: 'rgba(111, 232, 164, 0.6)',
+                borderColor: 'rgba(111, 232, 164, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: (items) => videos[items[0].dataIndex].title,
+                        label: (item) => `${formatViews(item.parsed.y)} views`
+                    }
+                },
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: (value) => formatViews(value)
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createContentTypeChart(regularCount, shortsCount) {
+    const ctx = document.getElementById('contentTypeChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Regular Videos', 'Shorts'],
+            datasets: [{
+                data: [regularCount, shortsCount],
+                backgroundColor: [
+                    'rgba(255, 228, 77, 0.6)',
+                    'rgba(111, 232, 164, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(255, 228, 77, 1)',
+                    'rgba(111, 232, 164, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: (item) => `${item.label}: ${item.parsed} videos`
+                    }
+                }
+            }
+        }
+    });
 }
 
 function renderFilteredVideos() {
@@ -807,6 +908,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load videos if we're on videos page
     if (document.querySelector('.videos-grid') || document.getElementById('videos-container')) {
         loadYouTubeVideos();
+    }
+    
+    // Load stats if we're on stats page
+    if (document.getElementById('stats-container')) {
+        loadChannelStats();
     }
     
     // Start checking Twitch status
