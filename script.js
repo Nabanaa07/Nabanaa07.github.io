@@ -208,7 +208,7 @@ function loadVideo(thumbnail) {
 }
 
 // YouTube Configuration
-const YOUTUBE_CHANNEL_ID = 'UCxKj_T4p0HvGpvL8YMvMqEw'; // Nabana07's channel ID
+const YOUTUBE_CHANNEL_ID = 'UCUehKKFJqxTRTzZWoqB9taw'; // Nabana07's channel ID
 const MAX_VIDEOS = 15; // Number of videos to fetch
 
 // YouTube Data API v3 key
