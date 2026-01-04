@@ -226,58 +226,74 @@ const KNOWN_SHORTS = [
 
 // Fetch videos from YouTube RSS feed
 async function fetchLatestVideos() {
-    try {
-        const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
-        const corsProxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
-        
-        const response = await fetch(corsProxy);
-        if (!response.ok) throw new Error('Failed to fetch RSS feed');
-        
-        const xmlText = await response.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-        
-        // Check for parsing errors
-        const parserError = xmlDoc.querySelector('parsererror');
-        if (parserError) throw new Error('XML parsing failed');
-        
-        const entries = xmlDoc.querySelectorAll('entry');
-        const videos = [];
-        
-        entries.forEach((entry, index) => {
-            if (index >= MAX_VIDEOS) return;
+    const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
+    
+    // Try multiple CORS proxies in order
+    const corsProxies = [
+        `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`,
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`
+    ];
+    
+    for (const proxyUrl of corsProxies) {
+        try {
+            console.log('Trying to fetch YouTube RSS feed...');
+            const response = await fetch(proxyUrl, { 
+                method: 'GET',
+                signal: AbortSignal.timeout(5000) // 5 second timeout
+            });
             
-            const videoId = entry.querySelector('videoId')?.textContent;
-            const title = entry.querySelector('title')?.textContent;
+            if (!response.ok) continue;
             
-            if (videoId && title) {
-                // Determine if it's a short based on KNOWN_SHORTS array
-                const isShort = KNOWN_SHORTS.includes(videoId);
+            const xmlText = await response.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+            
+            // Check for parsing errors
+            const parserError = xmlDoc.querySelector('parsererror');
+            if (parserError) continue;
+            
+            const entries = xmlDoc.querySelectorAll('entry');
+            if (entries.length === 0) continue;
+            
+            const videos = [];
+            
+            entries.forEach((entry, index) => {
+                if (index >= MAX_VIDEOS) return;
                 
-                videos.push({
-                    videoId,
-                    title,
-                    type: isShort ? 'short' : 'regular',
-                    thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
-                });
+                const videoId = entry.querySelector('videoId')?.textContent;
+                const title = entry.querySelector('title')?.textContent;
+                
+                if (videoId && title) {
+                    // Determine if it's a short based on KNOWN_SHORTS array
+                    const isShort = KNOWN_SHORTS.includes(videoId);
+                    
+                    videos.push({
+                        videoId,
+                        title,
+                        type: isShort ? 'short' : 'regular',
+                        thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+                    });
+                }
+            });
+            
+            if (videos.length > 0) {
+                console.log(`Successfully loaded ${videos.length} videos from YouTube RSS`);
+                return videos;
             }
-        });
-        
-        if (videos.length === 0) throw new Error('No videos found in RSS feed');
-        
-        console.log(`Successfully loaded ${videos.length} videos from YouTube RSS`);
-        return videos;
-        
-    } catch (error) {
-        console.warn('Failed to fetch videos from RSS feed:', error);
-        console.log('Using fallback videos');
-        
-        // Return fallback videos with thumbnail URLs
-        return FALLBACK_VIDEOS.map(v => ({
-            ...v,
-            thumbnail: `https://img.youtube.com/vi/${v.videoId}/maxresdefault.jpg`
-        }));
+            
+        } catch (error) {
+            console.log(`Proxy failed, trying next...`);
+            continue;
+        }
     }
+    
+    // All proxies failed, use fallback
+    console.warn('All RSS fetch methods failed, using fallback videos');
+    return FALLBACK_VIDEOS.map(v => ({
+        ...v,
+        thumbnail: `https://img.youtube.com/vi/${v.videoId}/maxresdefault.jpg`
+    }));
 }
 
 function renderVideos(videos, containerId) {
