@@ -1095,7 +1095,7 @@ section h2 {
     justify-content: center;
     gap: 4px;
     padding: 4px 8px;
-    bottom: 12px;
+    bottom: 16px;
     right: 12px;
 }
 
@@ -2488,10 +2488,23 @@ img[src*="png/"] {
 /* Black icons - apply theme-based coloring */
 /* Target all black icons: homeicon, phoneandletterblack, listakamenu, etc. */
 img[src*="homeicon.png"],
-img[src*="phoneandletterblack.png"],
-img[src*="listakamenu.png"],
-img[src*="black"] {
+img[src*="listakamenu.png"] {
     filter: none; /* Default: keep black in light mode */
+}
+
+/* Contact icon needs special handling - invert by default for visibility on white */
+img[src*="phoneandletterblack.png"] {
+    filter: brightness(0) invert(1); /* Default: white for visibility */
+}
+
+/* Light mode: make it black since background is white */
+body[data-theme="light"] img[src*="phoneandletterblack.png"] {
+    filter: none;
+}
+
+/* Generic black icons in light mode */
+body[data-theme="light"] img[src*="black"]:not([src*="phoneandletterblack.png"]) {
+    filter: none;
 }
 
 /* Dark and Extra Dark themes: White icons */
