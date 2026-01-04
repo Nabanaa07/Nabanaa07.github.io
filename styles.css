@@ -109,11 +109,18 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background-color: rgba(10, 10, 10, 0.95);
+    background-color: var(--bg-secondary);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-color);
     z-index: 1000;
     padding: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode navbar transparency */
+body[data-theme="dark"] .navbar,
+body[data-theme="extra-dark"] .navbar {
+    background-color: rgba(10, 10, 10, 0.95);
 }
 
 .nav-container {
