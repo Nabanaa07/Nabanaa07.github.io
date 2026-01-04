@@ -64,14 +64,38 @@
 
     <section class="content-section" style="padding-top: 120px;">
         <div class="container">
-            <h2 style="text-align: center; margin-bottom: 2rem;">Latest Videos</h2>
-            <div class="videos-grid" id="regular-videos">
-                <!-- Regular videos automatically loaded from YouTube -->
+            <h2 style="text-align: center; margin-bottom: 1rem;">Videos</h2>
+            
+            <!-- Filter Tabs -->
+            <div class="video-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="latest">Latest Videos</button>
+                <button class="filter-btn" data-filter="shorts">Shorts</button>
+                <button class="filter-btn" data-filter="popular">Most Popular</button>
             </div>
             
-            <h2 style="text-align: center; margin: 4rem 0 2rem;">Shorts</h2>
-            <div class="shorts-grid" id="shorts-videos">
-                <!-- Shorts automatically loaded from YouTube -->
+            <!-- View Toggle -->
+            <div class="view-toggle">
+                <button class="view-btn active" data-view="grid" aria-label="Grid view">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                    </svg>
+                </button>
+                <button class="view-btn" data-view="list" aria-label="List view">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="3" y="4" width="18" height="2"/>
+                        <rect x="3" y="11" width="18" height="2"/>
+                        <rect x="3" y="18" width="18" height="2"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Videos Container -->
+            <div class="videos-container" id="videos-container">
+                <!-- Videos loaded dynamically -->
             </div>
 
             <div class="cta-section">
