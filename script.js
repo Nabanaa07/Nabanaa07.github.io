@@ -243,25 +243,67 @@ async function fetchLatestVideos() {
                 signal: AbortSignal.timeout(5000) // 5 second timeout
             });
             
-            if (!response.ok) continue;
+            if (!response.ok) {
+                console.log(`Response not OK: ${response.status}`);
+                continue;
+            }
             
             const xmlText = await response.text();
+            console.log('Received XML response');
+            
+            // Check if response is actually XML
+            if (!xmlText.includes('<?xml') && !xmlText.includes('<feed')) {
+                console.log('Response is not XML, trying next proxy');
+                continue;
+            }
+            
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
             
             // Check for parsing errors
             const parserError = xmlDoc.querySelector('parsererror');
-            if (parserError) continue;
+            if (parserError) {
+                console.log('XML parsing error detected, trying next proxy');
+                continue;
+            }
             
-            const entries = xmlDoc.querySelectorAll('entry');
-            if (entries.length === 0) continue;
+            // Try to find entries (YouTube RSS uses 'entry' tags)
+            let entries = xmlDoc.querySelectorAll('entry');
+            
+            // Also try with namespace (some feeds use yt:videoId)
+            if (entries.length === 0) {
+                entries = xmlDoc.getElementsByTagName('entry');
+            }
+            
+            if (entries.length === 0) {
+                console.log('No video entries found, trying next proxy');
+                continue;
+            }
             
             const videos = [];
+            console.log(`Found ${entries.length} video entries`);
             
             entries.forEach((entry, index) => {
                 if (index >= MAX_VIDEOS) return;
                 
-                const videoId = entry.querySelector('videoId')?.textContent;
+                // Try multiple ways to extract video ID (different XML namespaces)
+                let videoId = entry.querySelector('videoId')?.textContent;
+                
+                // Try with yt: namespace
+                if (!videoId) {
+                    const ytVideoId = entry.getElementsByTagName('yt:videoId')[0];
+                    videoId = ytVideoId?.textContent;
+                }
+                
+                // Try extracting from link element
+                if (!videoId) {
+                    const link = entry.querySelector('link')?.getAttribute('href');
+                    if (link) {
+                        const match = link.match(/watch\?v=([^&]+)/);
+                        videoId = match?.[1];
+                    }
+                }
+                
                 const title = entry.querySelector('title')?.textContent;
                 
                 if (videoId && title) {
