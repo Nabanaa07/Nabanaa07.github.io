@@ -445,7 +445,7 @@ function createVideoCardWithInfo(video, viewType = 'grid') {
     videoCard.setAttribute('data-type', video.type);
     
     const durationBadge = video.type === 'short' 
-        ? `<div class="shorts-badge"><img src="icons/shorts-icon.png" alt="Shorts" style="width: 16px; height: 16px;"> Shorts</div>`
+        ? `<div class="shorts-badge"><img src="icons/shorts-icon.png" alt="Shorts"> Shorts</div>`
         : `<div class="duration-badge">${video.duration}</div>`;
     
     if (viewType === 'list') {
