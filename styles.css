@@ -1095,8 +1095,8 @@ section h2 {
     justify-content: center;
     gap: 4px;
     padding: 4px 8px;
-    bottom: 16px;
-    right: 12px;
+    bottom: 18px;
+    right: 10px;
 }
 
 .shorts-badge span {
@@ -2469,9 +2469,7 @@ body[data-theme="extra-dark"] .link-card img[src$=".gif"] {
 }
 
 /* Keep all new PNG icons natural - no filters */
-img[src*="png/"] {
-    filter: none !important;
-}
+
 
 /* Social link icons - ensure proper visibility */
 .social-link img {
