@@ -4,6 +4,48 @@
 const TWITCH_USERNAME = 'nabana07';
 const CHECK_INTERVAL = 60000; // Check every 60 seconds
 
+// ====== Page Loading System ======
+// Hide loader when page is fully loaded
+window.addEventListener('load', function() {
+    const loader = document.getElementById('page-loader');
+    if (loader) {
+        // Add a small delay to ensure content is painted
+        setTimeout(() => {
+            loader.classList.add('hidden');
+        }, 100);
+    }
+});
+
+// Show loader on page navigation
+window.addEventListener('beforeunload', function() {
+    const loader = document.getElementById('page-loader');
+    if (loader) {
+        loader.classList.remove('hidden');
+    }
+});
+
+// Intercept navigation links to show loader
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all internal navigation links
+    const internalLinks = document.querySelectorAll('a[href^="/"], a[href$=".html"], a.nav-link, .btn-primary[href$=".html"], .link-card[href$=".html"]');
+    
+    internalLinks.forEach(link => {
+        // Skip external links and hash links
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('http') || link.hasAttribute('target')) {
+            return;
+        }
+        
+        link.addEventListener('click', function(e) {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.classList.remove('hidden');
+            }
+        });
+    });
+});
+// ====== End Page Loading System ======
+
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -473,12 +515,12 @@ async function loadChannelStats() {
     container.innerHTML = `
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon"><img src="icons/youtube-icon.png" alt="YouTube" style="width: 48px; height: 48px;"></div>
+                <div class="stat-icon"><img src="icons/001-youtube.png" alt="YouTube" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${formatViews(channelStats.subscribers)}</div>
                 <div class="stat-label">Subscribers</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><img src="icons/lcd-monitor-with-play-symbol-on-screen.png" alt="Views" style="width: 48px; height: 48px;"></div>
+                <div class="stat-icon"><img src="icons/004-computer.png" alt="Views" style="width: 48px; height: 48px;"></div>
                 <div class="stat-value">${formatViews(channelStats.totalViews)}</div>
                 <div class="stat-label">Total Channel Views</div>
             </div>

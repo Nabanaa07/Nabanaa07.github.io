@@ -2306,3 +2306,88 @@ footer {
     min-height: 200px;
 }
 
+/* Loading Screen */
+#page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#page-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.loader-icon {
+    width: 80px;
+    height: 80px;
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.loader-text {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Icon Adjustments for Better Compatibility */
+.link-card img.link-icon,
+.social-link img,
+.theme-icon {
+    object-fit: contain;
+}
+
+/* Ensure animated GIF icons display properly */
+img[src$=".gif"] {
+    object-fit: contain;
+}
+
+/* Dark theme icon inversions */
+body[data-theme="dark"] img[src*="014-display"],
+body[data-theme="extra-dark"] img[src*="014-display"],
+body[data-theme="dark"] img[src*="018-home"],
+body[data-theme="extra-dark"] img[src*="018-home"],
+body[data-theme="dark"] img[src*="019-list"],
+body[data-theme="extra-dark"] img[src*="019-list"] {
+    filter: brightness(0) invert(1);
+}
+
+/* Keep colored icons natural */
+img[src*="001-youtube"],
+img[src*="002-instagram"],
+img[src*="003-live"],
+img[src*="005-twitch"],
+img[src*="008-tiktok"],
+img[src*="010-music"],
+img[src*="012-chocolate"],
+img[src*="013-banana"],
+img[src*="discord"],
+img[src*="egirlgamer"] {
+    filter: none !important;
+}
+
