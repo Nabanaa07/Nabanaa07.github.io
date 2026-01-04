@@ -2461,3 +2461,42 @@ img[src*="png/"] {
     background: transparent;
 }
 
+/* Menu icon styling */
+.mobile-menu-toggle img {
+    display: block;
+    object-fit: contain;
+}
+
+/* Contact page icon with theme-based coloring */
+.contact-icon-img {
+    margin: 0 auto 1.5rem;
+    display: block;
+    filter: none;
+}
+
+/* Theme-specific contact icon colors */
+body[data-theme="dark"] .contact-icon-img,
+body[data-theme="extra-dark"] .contact-icon-img {
+    filter: brightness(0) invert(1);
+}
+
+body[data-theme="egirl"] .contact-icon-img {
+    filter: brightness(0) saturate(100%) invert(33%) sepia(96%) saturate(6527%) hue-rotate(315deg) brightness(101%) contrast(101%);
+}
+
+body[data-theme="banana"] .contact-icon-img {
+    filter: brightness(0) saturate(100%) invert(78%) sepia(85%) saturate(1447%) hue-rotate(359deg) brightness(104%) contrast(104%);
+}
+
+body[data-theme="chocolate"] .contact-icon-img {
+    filter: brightness(0) saturate(100%) invert(71%) sepia(21%) saturate(628%) hue-rotate(349deg) brightness(91%) contrast(87%);
+}
+
+/* Mobile home icon - show homeicon.png on small screens */
+@media screen and (max-width: 768px) {
+    .logo-img {
+        content: url('icons/png/homeicon.png');
+        max-width: 40px;
+    }
+}
+
