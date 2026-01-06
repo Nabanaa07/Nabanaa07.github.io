@@ -1827,6 +1827,11 @@ section h2 {
     }
     
     /* Social Links Section (different from social icons) */
+
+    .email-link {
+    font-size: 1.5rem;
+    }
+    
     .social-links {
         flex-wrap: wrap;
         gap: 0.75rem;
@@ -1836,7 +1841,7 @@ section h2 {
     .social-links .social-link {
         flex: 1 1 auto;
         min-width: 120px;
-        max-width: 200px;
+        max-width: 500px;
         padding: 0.875rem 1rem;
         font-size: 0.9rem;
     }
@@ -2546,4 +2551,5 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
