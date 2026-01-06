@@ -1829,7 +1829,7 @@ section h2 {
     /* Social Links Section (different from social icons) */
 
     .email-link {
-    font-size: 1.5rem;
+    font-size: 0.9rem;
     }
     
     .social-links {
@@ -2551,5 +2551,6 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
