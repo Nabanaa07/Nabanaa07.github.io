@@ -2124,7 +2124,7 @@ body[data-theme="chocolate"] .dark-icon {
 body[data-theme="dark"] .dark-icon,
 body[data-theme="extradark"] .dark-icon,
 body[data-theme="banana"] .dark-icon {
-    filter: brightness(0) invert(0.8); /* Make dark icons white on dark backgrounds */
+    filter: brightness(0) invert(1); /* Make dark icons white on dark backgrounds */
 }
 
 /* Light mode icon - make brighter on dark backgrounds */
@@ -2517,7 +2517,7 @@ img[src*="listakamenu.png"] {
 
 /* Contact icon needs special handling - invert by default for visibility on white */
 img[src*="phoneandletterblack.png"] {
-    filter: brightness(0) invert(1); /* Default: white for visibility */
+    filter: brightness(0) invert(0.8); /* Default: white for visibility */
 }
 
 /* Light mode: make it black since background is white */
@@ -2571,6 +2571,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
