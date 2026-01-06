@@ -1873,8 +1873,8 @@ section h2 {
     }
 
     .yt-tab {
-    padding: 0 2rem 14px;
-    font-size: 0.38rem;
+    padding: 0 1.55rem 14px;
+    font-size: 0.90rem;
     position: relative;
     font-family: inherit;
 }
@@ -2558,6 +2558,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
