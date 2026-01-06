@@ -579,7 +579,19 @@ section h2 {
     height: 0;
     overflow: hidden;
 }
-
+.theme-menu {
+    position: absolute;
+    top: calc(100% - 10px);
+    right: 10rem;
+    left: 70rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.5rem;
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
 .video-wrapper iframe {
     position: absolute;
     top: 0;
@@ -2093,19 +2105,7 @@ section h2 {
     color: var(--mint-green);
 }
 
-.theme-menu {
-    position: absolute;
-    top: calc(100% - 10px);
-    right: 1.5rem;
-    left: 10rem;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 0.5rem;
-    min-width: 200px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-}
+
 
 .theme-icon {
     width: 20px;
@@ -2571,6 +2571,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
