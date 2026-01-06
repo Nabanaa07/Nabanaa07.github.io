@@ -1675,6 +1675,18 @@ section h2 {
         font-size: 0.85rem;
         z-index: 1001;
     }
+    .theme-btn:clicked {
+        background: #00000033;
+        position: absolute;
+        right: 4rem;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-left: 0;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+        z-index: 1001;
+    }
+    
     
     .theme-btn #theme-label {
         display: none;
@@ -1686,13 +1698,13 @@ section h2 {
     
     /* Position theme menu correctly on mobile */
     .theme-menu {
-        right: 4rem !important;
+        right: 2rem !important;
         top: 55px !important;
         z-index: 10000 !important;
         position: fixed !important;
         background: var(--bg-secondary) !important;
-        border: 2px solid var(--mint-green) !important;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+        left: 22rem;
     }
     
     .theme-option {
@@ -2083,8 +2095,9 @@ section h2 {
 
 .theme-menu {
     position: absolute;
-    top: calc(100% + 10px);
-    right: 0;
+    top: calc(100% - 10px);
+    right: 1.5rem;
+    left: 35rem;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -2558,6 +2571,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
