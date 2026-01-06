@@ -2111,7 +2111,7 @@ body[data-theme="chocolate"] .dark-icon {
 body[data-theme="dark"] .dark-icon,
 body[data-theme="extradark"] .dark-icon,
 body[data-theme="banana"] .dark-icon {
-    filter: brightness(0) invert(1); /* Make dark icons white on dark backgrounds */
+    filter: brightness(0) invert(0.8); /* Make dark icons white on dark backgrounds */
 }
 
 /* Light mode icon - make brighter on dark backgrounds */
@@ -2558,6 +2558,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
