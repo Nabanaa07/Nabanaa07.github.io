@@ -1871,6 +1871,13 @@ section h2 {
     .videos-container.grid-view {
         grid-template-columns: 1fr;
     }
+
+    .yt-tab {
+    padding: 0 2rem 14px;
+    font-size: 0.38rem;
+    position: relative;
+    font-family: inherit;
+}
     
     .videos-container.list-view .video-thumbnail {
         width: 120px;
@@ -2551,6 +2558,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
