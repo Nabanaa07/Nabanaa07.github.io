@@ -849,12 +849,37 @@ function initThemeSwitcher() {
     const savedTheme = localStorage.getItem('nabana-theme') || 'dark';
     document.body.setAttribute('data-theme', savedTheme);
     
+    // Function to position the menu under the button
+    function positionThemeMenu() {
+        if (themeMenu.style.display === 'block') {
+            const buttonRect = themeToggle.getBoundingClientRect();
+            
+            // Position the menu directly below the button
+            themeMenu.style.top = `${buttonRect.bottom + 8}px`;
+            
+            // On mobile (and smaller screens), align to the right edge
+            if (window.innerWidth <= 768) {
+                themeMenu.style.left = 'auto';
+                themeMenu.style.right = `${window.innerWidth - buttonRect.right}px`;
+            } else {
+                // On desktop, align to the button's left edge
+                themeMenu.style.left = `${buttonRect.left}px`;
+                themeMenu.style.right = 'auto';
+            }
+        }
+    }
+    
     // Toggle menu
     if (themeToggle && themeMenu) {
         themeToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             const isVisible = themeMenu.style.display === 'block';
             themeMenu.style.display = isVisible ? 'none' : 'block';
+            
+            // Position the menu after showing it
+            if (!isVisible) {
+                positionThemeMenu();
+            }
         });
         
         // Close menu when clicking outside
@@ -865,6 +890,12 @@ function initThemeSwitcher() {
         themeMenu.addEventListener('click', (e) => {
             e.stopPropagation();
         });
+        
+        // Reposition menu on window resize
+        window.addEventListener('resize', positionThemeMenu);
+        
+        // Reposition menu on scroll (useful if navbar is fixed/sticky)
+        window.addEventListener('scroll', positionThemeMenu);
     }
     
     // Theme selection
@@ -983,4 +1014,5 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hero) {
         setTimeout(() => hero.style.opacity = '1', 100);
     }
+
 });
