@@ -347,6 +347,12 @@ body[data-theme="extra-dark"] .navbar {
     box-shadow: 0 4px 15px rgb(232 111 111 / 30%);
 }
 
+.btn-twitch-primary {
+    background: linear-gradient(135deg, #d36fe8 0%, #6f9fe8 100%);
+    color: var(--bg-dark);
+    box-shadow: 0 4px 15px rgb(212 111 232 / 30%);
+}
+
 .btn-outline {
     border: 2px solid var(--mint-green);
     color: var(--mint-green);
@@ -2600,6 +2606,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
