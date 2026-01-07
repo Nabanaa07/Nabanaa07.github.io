@@ -1106,9 +1106,10 @@ section h2 {
     align-items: center;
     justify-content: center;
     gap: 4px;
-    padding: 4px 8px;
-    bottom: 18px;
-    right: 10px;
+    padding: 24px 24px;
+    bottom: -20px;
+    right: -20px;
+    background: none;
 }
 
 .shorts-badge span {
@@ -1346,10 +1347,13 @@ section h2 {
 }
 
 .videos-container.list-view .video-title {
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .videos-container.list-view .video-meta {
@@ -2573,6 +2577,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
