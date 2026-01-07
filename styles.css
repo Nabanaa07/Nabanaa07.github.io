@@ -259,9 +259,12 @@ body[data-theme="extra-dark"] .navbar {
 }
 
 .scroll-wrapper {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     justify-content: center;
-    margin-top: 40px;
 }
 
 .scrolldown {
@@ -2606,6 +2609,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
