@@ -609,9 +609,8 @@ section h2 {
 }
 .theme-menu {
     position: absolute;
-    top: calc(100% - 10px);
-    right: 10rem;
-    left: 70rem;
+    top: calc(100% - 0.5rem);
+    right: 0rem;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -1710,7 +1709,7 @@ section h2 {
     
     /* Position theme button on mobile - left of hamburger */
     .theme-btn {
-        position: absolute;
+        position: relative;
         right: 4rem;
         top: 50%;
         transform: translateY(-50%);
@@ -1742,13 +1741,13 @@ section h2 {
     
     /* Position theme menu correctly on mobile */
     .theme-menu {
-        right: 2rem !important;
-        top: 55px !important;
-        z-index: 10000 !important;
-        position: fixed !important;
+        right: 0;
+        top: calc(100% + 0.5rem);
+        z-index: 10000;
+        position: absolute;
         background: var(--bg-secondary) !important;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
-        left: 22rem;
+        left: auto;
     }
     
     .theme-option {
@@ -2605,6 +2604,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
