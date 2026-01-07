@@ -1709,11 +1709,12 @@ section h2 {
     
     /* Position theme button on mobile - left of hamburger */
     .theme-btn {
-        position: relative;
+        position: absolute;
         right: 4rem;
         top: 50%;
         transform: translateY(-50%);
         margin-left: 0;
+        margin-top: 0; /* Add this to ensure no extra margin */
         padding: 0.4rem 0.75rem;
         font-size: 0.85rem;
         z-index: 1001;
@@ -2599,6 +2600,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
