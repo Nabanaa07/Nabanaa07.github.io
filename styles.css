@@ -265,16 +265,27 @@ body[data-theme="extra-dark"] .navbar {
 }
 
 .scrolldown {
-    background: none;
-    border: none;
+    background: var(--bg-secondary);
+    border: 3px solid var(--border-color);
+    border-radius: 50%;
     cursor: pointer;
+    padding: 12px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scrolldown:hover {
+    transform: translateY(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .scrolldown img {
     width: 48px;
     height: 48px;
+    display: block;
 }
-
 
 .hero-cta {
     display: flex;
@@ -2595,6 +2606,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
