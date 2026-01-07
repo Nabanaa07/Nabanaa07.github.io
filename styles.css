@@ -337,14 +337,14 @@ body[data-theme="extra-dark"] .navbar {
 
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--mint-green) 0%, var(--light-green) 100%);
+    background: linear-gradient(135deg, #f11f1f 0%, #e86f85 100%);
     color: var(--bg-dark);
-    box-shadow: 0 4px 15px rgba(111, 232, 164, 0.3);
+    box-shadow: 0 4px 15px rgb(232 111 111 / 30%);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(111, 232, 164, 0.4);
+    box-shadow: 0 4px 15px rgb(232 111 111 / 30%);
 }
 
 .btn-outline {
@@ -2600,6 +2600,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
