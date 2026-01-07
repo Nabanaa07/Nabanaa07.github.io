@@ -1227,6 +1227,7 @@ section h2 {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
+    justify-content: center;
 }
 
 .yt-tab {
@@ -1646,7 +1647,6 @@ section h2 {
     .nav-content,
     .mobile-menu-toggle,
     .theme-btn,
-    .theme-menu,
     .nav-links {
         max-width: none;
     }
@@ -1897,7 +1897,7 @@ section h2 {
     }
 
     .yt-tab {
-    padding: 0 1.55rem 14px;
+    padding: 0 1rem 14px;
     font-size: 0.90rem;
     position: relative;
     font-family: inherit;
@@ -2571,6 +2571,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
