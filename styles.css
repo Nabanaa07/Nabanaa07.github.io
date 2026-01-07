@@ -608,17 +608,17 @@ section h2 {
     overflow: hidden;
 }
 .theme-menu {
-    position: absolute;
-    top: calc(100% - 0.5rem);
-    right: 0rem;
+    position: fixed; 
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 0.5rem;
     min-width: 200px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    z-index: 10000;
+    display: none; 
 }
+
 .video-wrapper iframe {
     position: absolute;
     top: 0;
@@ -1741,13 +1741,8 @@ section h2 {
     
     /* Position theme menu correctly on mobile */
     .theme-menu {
-        right: 0;
-        top: calc(100% + 0.5rem);
-        z-index: 10000;
-        position: absolute;
-        background: var(--bg-secondary) !important;
+        min-width: 180px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
-        left: auto;
     }
     
     .theme-option {
@@ -2604,6 +2599,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
