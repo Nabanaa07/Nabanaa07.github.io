@@ -8,9 +8,13 @@
 }
 
 :root {
-    --primary-yellow: #FFE44D;
-    --mint-green: #6FE8A4;
-    --light-green: #B4E86F;
+    --banana-yellow: #FFD84A;
+    --banana-cream: #FFF7C7;
+    --banana-spot: #8C6A2F;
+    --leaf-green: #4CCB5A;
+    --deep-leaf: #2E7A3F;
+    --banana-blush: #FFB86C;
+    --sunset-orange: #FF8A3D;
     --bg-dark: #0a0a0a;
     --bg-secondary: #111111;
     --card-bg: #1a1a1a;
@@ -2577,6 +2581,7 @@ body[data-theme="chocolate"] img[src*="black"] {
     margin: 0 auto 1.5rem;
     display: block;
 }
+
 
 
 
