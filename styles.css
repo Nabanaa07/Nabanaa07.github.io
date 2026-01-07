@@ -258,6 +258,24 @@ body[data-theme="extra-dark"] .navbar {
     color: var(--text-tertiary);
 }
 
+.scroll-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.scrolldown {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.scrolldown img {
+    width: 48px;
+    height: 48px;
+}
+
+
 .hero-cta {
     display: flex;
     gap: 1rem;
